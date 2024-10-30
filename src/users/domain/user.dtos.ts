@@ -1,21 +1,14 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@prisma/client';
-import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEmail,
-  IsEnum,
-  IsInt,
-  isNotEmpty,
   IsNotEmpty,
-  IsOptional,
+  IsNumber,
   IsString,
   IsUrl,
-  Max,
-  Min,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
 
 type UserWithoutId = Omit<
@@ -91,6 +84,14 @@ export class UserDto implements UserWithoutId {
   @IsNotEmpty()
   @MinLength(6)
   password: string;
+
+  @ApiProperty({
+    example: 1,
+    description: 'The unique identifier of the role associated with the user',
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  roleId: number;
 }
 
 export class UpdateUserDto extends PartialType(UserDto) {}

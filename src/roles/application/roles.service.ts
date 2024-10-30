@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { PrismaGenericService } from 'src/_shared/generic/prismaService.generic';
 import { Prisma } from '@prisma/client';
@@ -15,10 +15,28 @@ export class RolesService
     Prisma.RoleDeleteArgs,
     Prisma.RoleFindManyArgs
   >
+  implements OnModuleInit
 {
   private readonly logger = new Logger(RolesService.name);
   constructor(private readonly prismaService: PrismaService) {
     super(prismaService.role);
+  }
+  async onModuleInit() {
+    const roles = [
+      { name: 'admin', description: 'Administrator role with full access' },
+      { name: 'user', description: 'Regular user role with limited access' },
+    ];
+
+    for (const role of roles) {
+      await this.model.upsert({
+        where: { name: role.name },
+        update: {},
+        create: {
+          name: role.name,
+          description: role.description,
+        },
+      });
+    }
   }
 
   async createService(body: RoleDto, userId: number) {

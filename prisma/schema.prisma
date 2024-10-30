@@ -48,6 +48,8 @@ model User {
   version       Int          @default(0)
   ownerId       Int?         @map("owner_id")
   restarurantId Int?         @map("restarurant_id")
+  role          Role?        @relation(fields: [roleId], references: [id])
+  roleId        Int?         @map("role_id")
   restaurants   Restaurant[]
 }
 
@@ -64,6 +66,7 @@ model Role {
   deletedBy   String?      @map("deleted_by")
   ownerId     Int?         @map("owner_id")
   version     Int          @default(0)
+  User        User[]
 }
 
 model Permission {

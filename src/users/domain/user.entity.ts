@@ -95,4 +95,11 @@ export class UserEntity implements User {
       'The unique identifier of the restarurant associated with the user',
   })
   restarurantId: number;
+
+  @ApiProperty({
+    example: 1,
+    description:
+      'The unique identifier of the role associated with the user',
+  })
+  roleId: number;
 }
