@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id          Int       @id @default(autoincrement())
+  user        User[]
+  rating      Int       @default(0)
+  phone       String
+  name        String?   @unique
+  licenseType String    @unique
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  createdBy   String?   @map("created_by")
+  updatedBy   String?   @map("updated_by")
+  deletedAt   DateTime? @map("deleted_at")
+  deletedBy   String?   @map("deleted_by")
+  version     Int       @default(0)
+  ownerId     Int?      @map("owner_id")
+}
+
+model User {
+  id            Int          @id @default(autoincrement())
+  email         String       @unique
+  password      String       @unique
+  phone         String?      @unique
+  firstName     String?
+  lastName      String?
+  isActive      Boolean?     @default(false) @map("is_active")
+  photo         String?
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  createdBy     String?      @map("created_by")
+  updatedBy     String?      @map("updated_by")
+  deletedAt     DateTime?    @map("deleted_at")
+  deletedBy     String?      @map("deleted_by")
+  version       Int          @default(0)
+  ownerId       Int?         @map("owner_id")
+  restarurantId Int?         @map("restarurant_id")
+  restaurants   Restaurant[]
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique()
+  description String
+  permission  Permission[]
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  createdBy   String?      @map("created_by")
+  updatedBy   String?      @map("updated_by")
+  deletedAt   DateTime?    @map("deleted_at")
+  deletedBy   String?      @map("deleted_by")
+  ownerId     Int?         @map("owner_id")
+  version     Int          @default(0)
+}
+
+model Permission {
+  id          Int     @id @default(autoincrement())
+  path        String
+  handler     String
+  description String
+  active      Boolean @default(true)
+  role        Role[]
+
+  @@unique([path, handler])
+}
