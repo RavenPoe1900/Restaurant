@@ -25,64 +25,71 @@ export class PermissionsService
   constructor(
     private readonly prismaService: PrismaService,
     private readonly discoveryService: DiscoveryService,
-    private readonly metadataScanner: MetadataScanner,
-    private readonly reflector: Reflector
+    private readonly metadataScanner: MetadataScanner
   ) {
     super(prismaService.permission);
   }
-
-  async onModuleInit() {
-    // Aquí escaneamos las rutas y las guardamos en la base de datos
-    const routes: { path: string; method: RequestMethod; handler: string }[] =
-      this.scanEndpoints();
-
-    for (const route of routes) {
-      const sd: Prisma.PermissionUpsertArgs = {
-        where: { path_handler: { path: route.path, handler: route.handler } },
-        update: {},
-        create: {
-          path: route.path,
-          handler: route.handler,
-          description: '',
-          active: true,
-        },
-      };
-      await this.model.upsert(sd);
-    }
-  }
-
-  private scanEndpoints() {
-    let endpoints: { path: string; method: RequestMethod; handler: string }[] =
-      [];
-
+  getRoutes() {
+    const httpMethods = {
+      0: 'GET',
+      1: 'POST',
+      2: 'PUT',
+      3: 'DELETE',
+      4: 'PATCH',
+      5: 'OPTIONS',
+      6: 'HEAD',
+    };
     const controllers = this.discoveryService.getControllers();
+    const routes = [];
 
     controllers.forEach((controller) => {
+      const instance = controller.instance;
       const controllerPath =
-        this.reflector.get<string>('path', controller.metatype) || '';
+        Reflect.getMetadata('path', instance.constructor) || '';
 
-      this.metadataScanner.scanFromPrototype<object, any>(
-        controller.instance,
-        controller.metatype.prototype,
+      this.metadataScanner.scanFromPrototype(
+        instance,
+        Object.getPrototypeOf(instance),
         (methodName: string) => {
-          // Callback now accepts methodName: string
-          const method = controller.instance[methodName]; // Get the method using the name
-          const routePath = this.reflector.get<string>('path', method) || '';
-          const httpMethod = this.reflector.get<RequestMethod>(
-            'httpMethod',
-            method
+          let methodPath = Reflect.getMetadata('path', instance[methodName]);
+          const requestMethod = Reflect.getMetadata(
+            'method',
+            instance[methodName]
           );
 
-          if (routePath) {
-            endpoints.push({
-              path: `${controllerPath}${routePath}`,
-              method: httpMethod,
-              handler: methodName, // Use methodName as handler
+          if (methodPath) {
+            methodPath =
+              methodPath.indexOf('/') === -1 && methodPath.indexOf(':') === -1
+                ? '/' + methodPath
+                : controllerPath !== '/'
+                  ? methodPath
+                  : '';
+            routes.push({
+              path: `/${controllerPath}${methodPath}`,
+              method: httpMethods[requestMethod],
             });
           }
         }
       );
     });
-    return endpoints;
+
+    return routes;
+  }
+
+  async onModuleInit() {
+    const routes: { path: string; method: string }[] = this.getRoutes();
+    for (const route of routes) {
+      const permissionFilter: Prisma.PermissionUpsertArgs = {
+        where: { path_method: { path: route.path, method: route.method } },
+        update: {},
+        create: {
+          path: route.path,
+          method: route.method,
+          description: '',
+          active: true,
+        },
+      };
+      await this.model.upsert(permissionFilter);
+    }
   }
 }

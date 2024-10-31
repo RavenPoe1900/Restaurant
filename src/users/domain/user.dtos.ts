@@ -8,6 +8,8 @@ import {
   IsNumber,
   IsString,
   IsUrl,
+  Matches,
+  MaxLength,
   MinLength,
 } from 'class-validator';
 
@@ -77,12 +79,24 @@ export class UserDto implements UserWithoutId {
   lastName: string;
 
   @ApiProperty({
-    description: 'Contraseña del usuario',
-    type: String,
+    description: `The password for the user. Must contain at least 8 characters, one uppercase letter, one lowercase letter, 
+      one number, and one special character.`,
+    example: 'P@ssw0rd!',
   })
-  @IsString()
+  @IsString({ message: 'Password must be a string' })
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @MaxLength(20, { message: 'Password must not exceed 20 characters' })
+  @Matches(/(?=.*[A-Z])/, {
+    message: 'Password must contain at least one uppercase letter',
+  })
+  @Matches(/(?=.*[a-z])/, {
+    message: 'Password must contain at least one lowercase letter',
+  })
+  @Matches(/(?=.*\d)/, { message: 'Password must contain at least one number' })
+  @Matches(/(?=.*\W)/, {
+    message: 'Password must contain at least one special character',
+  })
   @IsNotEmpty()
-  @MinLength(6)
   password: string;
 
   @ApiProperty({

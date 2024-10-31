@@ -13,10 +13,10 @@ export class PermissionEntity implements Permission {
   path: string;
 
   @ApiProperty({
-    description: 'The handler type associated with the permission',
+    description: 'The method type associated with the permission',
     example: 'create',
   })
-  handler: string;
+  method: string;
 
   @ApiProperty({
     description: 'A detailed description of the permission',

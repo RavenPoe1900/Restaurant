@@ -18,12 +18,12 @@ export class PermissionDto implements PermissionWithoutId {
   path: string;
 
   @ApiProperty({
-    description: 'The handler type associated with the permission',
+    description: 'The method type associated with the permission',
   })
-  @IsString({ message: 'handler must be a string' })
-  @IsNotEmpty({ message: 'handler cannot be empty' })
+  @IsString({ message: 'method must be a string' })
+  @IsNotEmpty({ message: 'method cannot be empty' })
   @IsNotEmpty()
-  handler: string;
+  method: string;
 
   @ApiProperty({
     description: 'A detailed description of the permission',

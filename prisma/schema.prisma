@@ -72,10 +72,10 @@ model Role {
 model Permission {
   id          Int     @id @default(autoincrement())
   path        String
-  handler     String
+  method      String
   description String
   active      Boolean @default(true)
   role        Role[]
 
-  @@unique([path, handler])
+  @@unique([path, method])
 }
