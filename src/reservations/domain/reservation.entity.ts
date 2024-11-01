@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { $Enums } from '@prisma/client';
 
 export class ReservationEntity {
   @ApiProperty({
@@ -101,4 +102,11 @@ export class ReservationEntity {
     type: Number,
   })
   restaurantId?: number;
+
+  @ApiProperty({
+    description: 'Status Reservation',
+    example: $Enums.ReservationStatusEnum.CANCELLED,
+    enum: $Enums.ReservationStatusEnum,
+  })
+  status: $Enums.ReservationStatusEnum;
 }
