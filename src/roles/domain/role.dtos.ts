@@ -10,7 +10,7 @@ import {
   IsString,
 } from 'class-validator';
 
-type RoleWithoutId = Omit<
+type RoleWithout = Omit<
   Role,
   | 'id'
   | 'createdAt'
@@ -23,7 +23,7 @@ type RoleWithoutId = Omit<
   | 'version'
   | 'ownerId'
 >;
-export class RoleDto implements RoleWithoutId {
+export class RoleDto implements RoleWithout {
   @ApiProperty({
     description: 'A name of the entity',
     example: 'Admin.',

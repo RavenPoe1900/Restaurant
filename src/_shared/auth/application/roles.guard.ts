@@ -38,7 +38,7 @@ export class RolesGuard implements CanActivate {
       const roleFilter: Prisma.RoleFindUniqueArgs = {
         where: {
           name: user.roleName,
-          permission: {
+          permissions: {
             some: {
               path: route.path,
               method: httpMethod,

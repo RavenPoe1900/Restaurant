@@ -7,9 +7,13 @@ import { AuthModule } from './_shared/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './_shared/auth/application/roles.guard';
 import { AuthGuard } from './_shared/auth/application/auth.guard';
+import { ClientsModule } from './clients/clients.module';
+import { ReservationsModule } from './reservations/reservations.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     JwtModule.register({
       global: true,
       secret: process.env.SECRET,
@@ -19,6 +23,8 @@ import { AuthGuard } from './_shared/auth/application/auth.guard';
     PermissionsModule,
     UsersModule,
     AuthModule,
+    ClientsModule,
+    ReservationsModule,
   ],
   controllers: [],
   providers: [
