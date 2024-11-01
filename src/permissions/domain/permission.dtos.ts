@@ -1,14 +1,28 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Permission } from '@prisma/client';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
-type PermissionWithoutId = Omit<Permission, 'id'>;
-export class PermissionDto implements PermissionWithoutId {
+type PermissionWithout = Omit<
+  Permission,
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'createdBy'
+  | 'updatedBy'
+  | 'deletedAt'
+  | 'deletedAt'
+  | 'deletedBy'
+  | 'version'
+>;
+export class PermissionDto implements PermissionWithout {
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string;
+  updatedBy: string;
+  deletedAt: Date;
+  deletedBy: string;
+  version: number;
   @ApiProperty({
     description: 'The name of the path',
   })

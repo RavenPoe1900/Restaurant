@@ -13,7 +13,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-type UserWithoutId = Omit<
+type UserWithout = Omit<
   User,
   | 'id'
   | 'createdAt'
@@ -28,7 +28,7 @@ type UserWithoutId = Omit<
   | 'restarurantId'
 >;
 
-export class UserDto implements UserWithoutId {
+export class UserDto implements UserWithout {
   @ApiProperty({
     example: 'http://example.com/user/photo.jpg',
     description: "The URL of the user's photo",

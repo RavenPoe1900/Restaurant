@@ -41,7 +41,7 @@ export class RolesService
 
   async createService(body: RoleDto, userId: number) {
     const { permissions, ...data } = body;
-    const permissionCreateNested: Prisma.PermissionCreateNestedManyWithoutRoleInput =
+    const permissionCreateNested: Prisma.PermissionCreateNestedManyWithoutRolesInput =
       permissions
         ? {
             connect: permissions.map((subServiceId) => ({ id: subServiceId })),
@@ -50,7 +50,7 @@ export class RolesService
     const serviceCreateArgs: Prisma.RoleCreateArgs = {
       data: {
         ...data,
-        permission: permissionCreateNested,
+        permissions: permissionCreateNested,
         ownerId: userId,
       },
     };
@@ -65,7 +65,7 @@ export class RolesService
     const { permissionsToRemove, permissionsToAdd, ...data } = updateServiceDto;
     const roleUpdateInput: Prisma.RoleUpdateInput = {
       ...data,
-      permission: {
+      permissions: {
         disconnect: permissionsToRemove
           ? permissionsToRemove.map((personId) => ({ id: personId }))
           : undefined,
