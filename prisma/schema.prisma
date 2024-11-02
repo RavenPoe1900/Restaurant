@@ -103,7 +103,7 @@ model Client {
   version      Int           @default(0)
   ownerId      Int?          @map("owner_id")
   reservations Reservation[]
-  orders       Order[]
+  table        Table[]
 }
 
 model Reservation {
@@ -124,10 +124,25 @@ model Reservation {
   restaurantId Int?                  @map("restaurant_id")
 }
 
+model Table {
+  id           Int       @id @default(autoincrement())
+  number       Int
+  clientId     Int       @map("client_id")
+  client       Client    @relation(fields: [clientId], references: [id])
+  orders       Order[]
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  createdBy    String?   @map("created_by")
+  updatedBy    String?   @map("updated_by")
+  deletedAt    DateTime? @map("deleted_at")
+  deletedBy    String?   @map("deleted_by")
+  version      Int       @default(0)
+  ownerId      Int?      @map("owner_id")
+  restaurantId Int?      @map("restaurant_id")
+}
+
 model Order {
   id           Int             @id @default(autoincrement())
-  clientId     Int
-  client       Client          @relation(fields: [clientId], references: [id])
   totalPrice   Float           @map("total_price")
   date         DateTime
   status       OrdenStatusEnum
@@ -140,6 +155,8 @@ model Order {
   version      Int             @default(0)
   ownerId      Int?            @map("owner_id")
   restaurantId Int?            @map("restaurant_id")
+  tableId      Int             @map("table_id")
+  table        Table           @relation(fields: [tableId], references: [id])
   items        OrderItem[]
 }
 

@@ -1,0 +1,118 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import {
+  createSwagger,
+  deleteSwagger,
+  findOneSwagger,
+  findSwagger,
+  updateSwagger,
+} from 'src/_shared/infrastructure/swagger/http.swagger';
+import { ApiResponseSwagger } from 'src/_shared/infrastructure/swagger/response.swagger';
+import { TablesService } from '../application/tables.service';
+import { TableDto, UpdateTableDto } from '../domain/table.dtos';
+import { PaginationTableDto } from '../domain/pagination-table.dto';
+import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dto';
+import { TableEntity } from '../domain/table.entity';
+
+const controllerName = 'Tables';
+@ApiTags('Tables')
+@Controller({
+  path: 'tables',
+  version: '1',
+})
+export class TablesController {
+  constructor(private readonly service: TablesService) {}
+
+  /**
+   * Creates a table.
+   * @param body DTO of the creation of a table.
+   * @returns The created table or an error.
+   */
+
+  @HttpCode(HttpStatus.CREATED)
+  @ApiResponseSwagger(createSwagger(TableDto, controllerName))
+  @Post()
+  async createTable(@Body() body: TableDto): Promise<TableEntity> {
+    return await this.service.create({ data: body });
+  }
+
+  /**
+   * Gets all tables. It allows to filter by any field contained in the DTO object of the table.
+   * @param page Number of the page to retrieve.
+   * @param limit Limit of tables to retrieve.
+   * @param filter Filter of the tables to be retrieved in stringified JSON format.
+   * @returns tables that match a given filter or an error.
+   */
+
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseSwagger(findSwagger(TableDto, controllerName))
+  @Get()
+  async findAll(
+    @Query() pagination: PaginationTableDto
+  ): Promise<PaginatedResponse<TableEntity>> {
+    return this.service.findAll({
+      skip: pagination.page,
+      take: pagination.perPage,
+    });
+  }
+
+  /**
+   * Gets a table by id.
+   * @param id ID of the table to retrieve.
+   * @returns Table that matches the given id or an error.
+   */
+
+  @HttpCode(HttpStatus.OK)
+  @ApiResponseSwagger(findOneSwagger(TableDto, controllerName))
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<TableEntity> {
+    return this.service.findOne(this.service.filter(id));
+  }
+
+  /**
+   * Updates a table. It allows to update any field contained in the DTO object of the table.
+   * @param id ID of the table to update.
+   * @param UpdateTableDto Object containing the fields to update.
+   * @returns The updated table or an error.
+   */
+
+  @HttpCode(HttpStatus.ACCEPTED)
+  @ApiResponseSwagger(updateSwagger(TableDto, controllerName))
+  @Patch(':id')
+  async updateTable(
+    @Param('id') id: string,
+    @Body() updateTableDto: UpdateTableDto
+  ): Promise<TableEntity> {
+    return this.service.update(this.service.filter(id), {
+      data: updateTableDto,
+      where: { id: +id },
+    });
+  }
+
+  /**
+   * Deletes a table by id.
+   * @param id ID of the table to delete.
+   * @returns Null or an error.
+   */
+
+  @HttpCode(HttpStatus.ACCEPTED)
+  @ApiResponseSwagger(deleteSwagger(TableDto, controllerName))
+  @Delete(':id')
+  async deleteTable(@Param('id') id: string): Promise<TableEntity> {
+    return this.service.remove(
+      this.service.filter(id),
+      this.service.filter(id)
+    );
+  }
+}
