@@ -26,6 +26,7 @@ export class UsersService
   ) {
     super(prismaService.user);
   }
+
   async onModuleInit() {
     const hashedPassword = await hashPassword(process.env.PASSWORD);
 
@@ -46,6 +47,7 @@ export class UsersService
       where: { id: user.roleId },
     });
   }
+
   async createUser(
     createUserDto: UserDto,
     userId: number,
@@ -53,13 +55,12 @@ export class UsersService
   ): Promise<User> {
     const hashedPassword = await hashPassword(createUserDto.password);
     createUserDto.password = hashedPassword;
-    return null;
-    // return await this.create({
-    //   data: {
-    //     ...createUserDto,
-    //     ownerId: userId,
-    //     restarurantId: restaurantId,
-    //   },
-    // });
+    return await this.create({
+      data: {
+        ...createUserDto,
+        ownerId: userId,
+        restaurantId: restaurantId,
+      },
+    });
   }
 }

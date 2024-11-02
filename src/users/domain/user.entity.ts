@@ -1,90 +1,66 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@prisma/client';
-export class UserEntity implements User {
-  @ApiProperty({ example: 1, description: 'The unique identifier of the user' })
+import { BaseEntity } from 'src/_shared/domain/base.entity';
+
+export class UserEntity extends BaseEntity implements User {
+  @ApiProperty({
+    example: 1,
+    description: 'The unique identifier of the user',
+    type: Number,
+  })
   id: number;
 
   @ApiProperty({
     example: 'john@example.com',
     description: 'The email address of the user',
+    type: String,
   })
   email: string;
 
   @ApiProperty({
     example: '323 2032',
     description: 'Phone of the user',
+    type: String,
   })
   phone: string;
 
-  @ApiProperty({ example: 'John', description: 'The first name of the user' })
+  @ApiProperty({
+    example: 'John',
+    description: 'The first name of the user',
+    type: String,
+  })
   firstName: string;
 
-  @ApiProperty({ example: 'Doe', description: 'The last name of the user' })
+  @ApiProperty({
+    example: 'Doe',
+    description: 'The last name of the user',
+    type: String,
+  })
   lastName: string;
 
   @ApiProperty({
     example: true,
     description: 'Indicates whether the user account is active or not',
+    type: Boolean,
   })
   isActive: boolean;
 
   @ApiProperty({
     example: 'http://example.com/user/photo.jpg',
     description: "The URL of the user's photo",
+    type: String,
   })
   photo: string;
 
   @ApiProperty({
-    example: '2024-04-07T10:00:00Z',
-    description: 'The timestamp when the user was created',
-  })
-  createdAt: Date;
-
-  @ApiProperty({
-    example: '2024-04-07T10:30:00Z',
-    description: 'The timestamp when the user was last updated',
-  })
-  updatedAt: Date;
-
-  @ApiProperty({
-    example: 'admin',
-    description: 'The username of the user who created this user',
-  })
-  createdBy: string;
-
-  @ApiProperty({
-    example: 'user',
-    description: 'The username of the user who last updated this user',
-  })
-  updatedBy: string;
-
-  @ApiProperty({
-    example: '2024-04-07T11:00:00Z',
-    description: 'The timestamp when the user was deleted (if applicable)',
-  })
-  deletedAt: Date;
-
-  @ApiProperty({
-    example: 'admin',
-    description:
-      'The username of the user who deleted this user (if applicable)',
-  })
-  deletedBy: string;
-
-  @ApiProperty({
-    example: 1,
-    description: 'The version number of the user data',
-  })
-  version: number;
-
-  @ApiProperty({
     example: 1,
     description: 'The unique identifier of the owner of the user',
+    type: Number,
   })
   ownerId: number;
 
   @ApiProperty({
-    description: 'Contraseña del usuario',
+    description: 'Password of the user',
     type: String,
   })
   password: string;
@@ -92,14 +68,15 @@ export class UserEntity implements User {
   @ApiProperty({
     example: 1,
     description:
-      'The unique identifier of the restarurant associated with the user',
+      'The unique identifier of the restaurant associated with the user',
+    type: Number,
   })
-  restarurantId: number;
+  restaurantId: number;
 
   @ApiProperty({
     example: 1,
-    description:
-      'The unique identifier of the role associated with the user',
+    description: 'The unique identifier of the role associated with the user',
+    type: Number,
   })
   roleId: number;
 }

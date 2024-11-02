@@ -28,7 +28,7 @@ import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dt
 const controllerName = 'Clients';
 @ApiTags('Clients')
 @Controller({
-  path: 'subReservations',
+  path: 'clients',
   version: '1',
 })
 export class ClientsController {
@@ -48,11 +48,11 @@ export class ClientsController {
   }
 
   /**
-   * Gets all subReservations. It allows to filter by any field contained in the DTO object of the client.
+   * Gets all orderItems. It allows to filter by any field contained in the DTO object of the client.
    * @param page Number of the page to retrieve.
-   * @param limit Limit of subReservations to retrieve.
-   * @param filter Filter of the subReservations to be retrieved in stringified JSON format.
-   * @returns subReservations that match a given filter or an error.
+   * @param limit Limit of orderItems to retrieve.
+   * @param filter Filter of the orderItems to be retrieved in stringified JSON format.
+   * @returns orderItems that match a given filter or an error.
    */
 
   @HttpCode(HttpStatus.OK)

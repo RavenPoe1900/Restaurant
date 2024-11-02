@@ -11,6 +11,7 @@ import { Public } from './public.decorator';
 import { AuthService } from '../application/auth.service';
 import { LoginDto } from '../domain/login.dto';
 import { RequestUser } from 'src/_shared/domain/interface/request-user';
+import { SignUpDto } from '../domain/signUp.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,8 +20,15 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: LoginDto) {
-    return this.authService.signIn(signInDto.email, signInDto.password);
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto.email, loginDto.password);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('signUp')
+  signUp(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto);
   }
 
   @Get('profile')

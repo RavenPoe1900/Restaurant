@@ -35,7 +35,7 @@ export class ClientDto implements ClientWithout {
   email: string;
 
   @ApiProperty({ description: 'The ID of the restaurant', required: false })
-  @IsOptional()
+  @IsNotEmpty()
   @IsInt()
   restaurantId?: number;
 }
