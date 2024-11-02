@@ -34,6 +34,7 @@ export class OrderItemDto implements OrderItemWithoutId {
   })
   @IsInt()
   @IsPositive()
+  @IsNotEmpty()
   quantity: number;
 
   @ApiProperty({
@@ -43,6 +44,7 @@ export class OrderItemDto implements OrderItemWithoutId {
   })
   @IsNumber()
   @IsPositive()
+  @IsNotEmpty()
   price: number;
 
   @ApiProperty({
@@ -51,6 +53,7 @@ export class OrderItemDto implements OrderItemWithoutId {
     type: Number,
   })
   @IsInt()
+  @IsNotEmpty()
   orderId: number;
 
   @ApiProperty({
@@ -59,6 +62,7 @@ export class OrderItemDto implements OrderItemWithoutId {
     type: String,
   })
   @IsDate()
+  @IsNotEmpty()
   date: Date;
 }
 

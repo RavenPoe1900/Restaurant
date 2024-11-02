@@ -28,6 +28,7 @@ export class OrderDto extends WaiterOrderDto implements OrderWithoutId {
   @IsEnum($Enums.ReservationStatusEnum, {
     message: 'Name must be a valid enum value',
   })
+  @IsNotEmpty()
   status: $Enums.OrdenStatusEnum;
 }
 

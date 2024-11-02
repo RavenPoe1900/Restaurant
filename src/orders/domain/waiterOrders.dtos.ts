@@ -1,15 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDate,
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-} from 'class-validator';
+import { IsDate, IsInt, IsNotEmpty, IsNumber } from 'class-validator';
 import { OrderEntity } from './orders.entity';
-import { $Enums } from '@prisma/client';
 
 type WaiterOrderWithoutId = Omit<
   OrderEntity,
@@ -52,6 +43,7 @@ export class WaiterOrderDto implements WaiterOrderWithoutId {
     type: Number,
   })
   @IsNumber()
+  @IsNotEmpty()
   totalPrice: number;
 
   @ApiProperty({
@@ -63,4 +55,14 @@ export class WaiterOrderDto implements WaiterOrderWithoutId {
   @IsNotEmpty()
   @IsDate()
   date: Date;
+
+  @ApiProperty({
+    description: 'The ID of the table of the order record',
+    required: false,
+    example: 1,
+    type: Number,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  tableId: number;
 }

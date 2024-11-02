@@ -51,6 +51,7 @@ export class ReservationDto implements ReservationWithout {
     example: $Enums.ReservationStatusEnum.PENDING,
     enum: $Enums.ReservationStatusEnum,
   })
+  @IsNotEmpty()
   @IsEnum($Enums.ReservationStatusEnum, {
     message: 'Name must be a valid enum value',
   })
