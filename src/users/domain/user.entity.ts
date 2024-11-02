@@ -94,7 +94,7 @@ export class UserEntity implements User {
     description:
       'The unique identifier of the restarurant associated with the user',
   })
-  restarurantId: number;
+  restaurantId: number;
 
   @ApiProperty({
     example: 1,

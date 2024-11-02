@@ -25,7 +25,7 @@ type UserWithout = Omit<
   | 'deletedBy'
   | 'version'
   | 'ownerId'
-  | 'restarurantId'
+  | 'restaurantId'
 >;
 
 export class UserDto implements UserWithout {

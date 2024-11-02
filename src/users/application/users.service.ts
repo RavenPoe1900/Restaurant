@@ -26,6 +26,7 @@ export class UsersService
   ) {
     super(prismaService.user);
   }
+
   async onModuleInit() {
     const hashedPassword = await hashPassword(process.env.PASSWORD);
 
@@ -46,6 +47,7 @@ export class UsersService
       where: { id: user.roleId },
     });
   }
+  
   async createUser(
     createUserDto: UserDto,
     userId: number,
