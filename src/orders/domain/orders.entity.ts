@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { $Enums, Order } from '@prisma/client';
 
-export class OrderEntity {
+export class OrderEntity implements Order {
   @ApiProperty({
     description: 'The unique identifier of the order',
     example: 1,
@@ -16,12 +17,26 @@ export class OrderEntity {
   clientId: number;
 
   @ApiProperty({
+    description: 'Status Order',
+    example: $Enums.OrdenStatusEnum.CLOSE,
+    enum: $Enums.OrdenStatusEnum,
+  })
+  status: $Enums.OrdenStatusEnum;
+
+  @ApiProperty({
     description:
       'The total amount of the order in the currency of the restaurant',
     example: 29.99,
     type: Number,
   })
   total: number;
+
+  @ApiProperty({
+    description: 'Price of the product in the order item',
+    example: 25.0,
+    type: Number,
+  })
+  totalPrice: number;
 
   @ApiProperty({
     description: 'The date when the order was placed',
@@ -53,7 +68,7 @@ export class OrderEntity {
     example: 'admin',
     type: String,
   })
-  createdBy?: string;
+  createdBy: string;
 
   @ApiProperty({
     description: 'The user who last updated the order record',
@@ -61,7 +76,7 @@ export class OrderEntity {
     example: 'admin',
     type: String,
   })
-  updatedBy?: string;
+  updatedBy: string;
 
   @ApiProperty({
     description: 'The date when the order was deleted, if applicable',
@@ -70,7 +85,7 @@ export class OrderEntity {
     type: String,
     format: 'date-time',
   })
-  deletedAt?: Date;
+  deletedAt: Date;
 
   @ApiProperty({
     description: 'The user who deleted the order record, if applicable',
@@ -78,7 +93,7 @@ export class OrderEntity {
     example: 'admin',
     type: String,
   })
-  deletedBy?: string;
+  deletedBy: string;
 
   @ApiProperty({
     description: 'The version of the order record for optimistic locking',
@@ -93,7 +108,7 @@ export class OrderEntity {
     example: 1,
     type: Number,
   })
-  ownerId?: number;
+  ownerId: number;
 
   @ApiProperty({
     description: 'The ID of the restaurant associated with the order',
@@ -101,5 +116,5 @@ export class OrderEntity {
     example: 1,
     type: Number,
   })
-  restaurantId?: number;
+  restaurantId: number;
 }
