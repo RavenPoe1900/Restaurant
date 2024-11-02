@@ -1,35 +1,35 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Permission } from '@prisma/client';
-export class PermissionEntity implements Permission {
+import { Client } from '@prisma/client';
+
+export class ClientEntity implements Client {
   @ApiProperty({
-    description: 'The unique identifier of the permission',
+    description: 'The unique identifier of the client',
     example: 1,
+    type: Number,
   })
   id: number;
 
   @ApiProperty({
-    description: 'The path of the permission',
+    description: 'The name of the client',
+    example: 'John Doe',
+    type: String,
   })
-  path: string;
+  name: string;
 
   @ApiProperty({
-    description: 'The method type associated with the permission',
-    example: 'create',
+    description: 'The email of the client, must be unique',
+    example: 'john.doe@example.com',
+    type: String,
   })
-  method: string;
+  email: string;
 
   @ApiProperty({
-    description: 'A detailed description of the permission',
-    example: 'Allows creating new administrative accounts',
+    description: 'The ID of the restaurant the client is associated with',
     required: false,
+    example: 1,
+    type: Number,
   })
-  description: string;
-
-  @ApiProperty({
-    description: 'Indicates whether the permission is currently active',
-    example: true,
-  })
-  active: boolean;
+  restaurantId: number;
 
   @ApiProperty({
     description: 'The date when the client was created',
@@ -86,4 +86,12 @@ export class PermissionEntity implements Permission {
     type: Number,
   })
   version: number;
+
+  @ApiProperty({
+    description: 'The ID of the owner of the client record',
+    required: false,
+    example: 1,
+    type: Number,
+  })
+  ownerId: number;
 }
