@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { $Enums, Reservation } from '@prisma/client';
+import { BaseEntity } from 'src/_shared/domain/base.entity';
 
-export class ReservationEntity implements Reservation {
+export class ReservationEntity extends BaseEntity implements Reservation {
   @ApiProperty({
     description: 'The unique identifier of the reservation',
     example: 1,
@@ -30,62 +31,6 @@ export class ReservationEntity implements Reservation {
     type: String,
   })
   time: string;
-
-  @ApiProperty({
-    description: 'The date when the reservation was created',
-    example: '2024-01-01T00:00:00.000Z',
-    type: String,
-    format: 'date-time',
-  })
-  createdAt: Date;
-
-  @ApiProperty({
-    description: 'The date when the reservation was last updated',
-    example: '2024-01-10T00:00:00.000Z',
-    type: String,
-    format: 'date-time',
-  })
-  updatedAt: Date;
-
-  @ApiProperty({
-    description: 'The user who created the reservation record',
-    required: false,
-    example: 'admin',
-    type: String,
-  })
-  createdBy: string;
-
-  @ApiProperty({
-    description: 'The user who last updated the reservation record',
-    required: false,
-    example: 'admin',
-    type: String,
-  })
-  updatedBy: string;
-
-  @ApiProperty({
-    description: 'The date when the reservation was deleted, if applicable',
-    required: false,
-    example: '2024-01-15T00:00:00.000Z',
-    type: String,
-    format: 'date-time',
-  })
-  deletedAt: Date;
-
-  @ApiProperty({
-    description: 'The user who deleted the reservation record, if applicable',
-    required: false,
-    example: 'admin',
-    type: String,
-  })
-  deletedBy: string;
-
-  @ApiProperty({
-    description: 'The version of the reservation record for optimistic locking',
-    example: 1,
-    type: Number,
-  })
-  version: number;
 
   @ApiProperty({
     description: 'The ID of the owner of the reservation record',

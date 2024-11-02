@@ -26,22 +26,41 @@ type RestaurantWithoutId = Omit<
   | 'version'
   | 'ownerId'
 >;
+
 export class RestaurantDto implements RestaurantWithoutId {
-  @ApiProperty({ description: 'Phone number of the restaurant' })
+  @ApiProperty({
+    description: 'Phone number of the restaurant',
+    example: '123-456-7890', 
+    type: String,
+  })
   @IsPhoneNumber(null, { message: 'Phone number must be a valid phone number' })
   phone: string;
 
-  @ApiProperty({ description: 'Name of the restaurant', required: false })
-  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Name of the restaurant',
+    required: false,
+    example: 'The Great Restaurant', 
+    type: String,
+  })
+  @IsNotEmpty({ message: 'Name is required' })
   @IsString({ message: 'Name must be a string' })
   name: string;
 
-  @ApiProperty({ description: 'License type of the restaurant' })
+  @ApiProperty({
+    description: 'License type of the restaurant',
+    example: 'Food Service License', 
+    type: String,
+  })
   @IsString({ message: 'License type must be a string' })
   licenseType: string;
 
-  @ApiProperty({ description: 'Rating of the restaurant', default: 0 })
-  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Rating of the restaurant',
+    default: 0,
+    example: 5, 
+    type: Number,
+  })
+  @IsNotEmpty({ message: 'Rating is required' })
   @IsInt({ message: 'Rating must be an integer' })
   @IsPositive({ message: 'Rating must be a positive number' })
   rating: number;
