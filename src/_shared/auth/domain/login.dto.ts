@@ -37,4 +37,12 @@ export class LoginDto {
   @IsNotEmpty()
   @IsEmail({}, { message: 'Invalid email format' })
   email: string;
+
+  @ApiProperty({
+    description: 'The ID of the restaurant associated with the order',
+    required: false,
+    example: 1,
+    type: Number,
+  })
+  restaurantId: number;
 }
