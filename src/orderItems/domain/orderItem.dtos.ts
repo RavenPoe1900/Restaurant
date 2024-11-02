@@ -24,7 +24,7 @@ type OrderItemWithoutId = Omit<
   | 'deletedBy'
   | 'version'
   | 'ownerId'
-  | 'restarurantId'
+  | 'restaurantId'
 >;
 export class OrderItemDto implements OrderItemWithoutId {
   @ApiProperty({

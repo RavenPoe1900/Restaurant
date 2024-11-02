@@ -47,7 +47,7 @@ export class UsersService
       where: { id: user.roleId },
     });
   }
-  
+
   async createUser(
     createUserDto: UserDto,
     userId: number,
@@ -60,7 +60,7 @@ export class UsersService
     //   data: {
     //     ...createUserDto,
     //     ownerId: userId,
-    //     restarurantId: restaurantId,
+    //     restaurantId: restaurantId,
     //   },
     // });
   }

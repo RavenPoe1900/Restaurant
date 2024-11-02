@@ -52,7 +52,7 @@ export class UsersController {
     return await this.service.createUser(
       body,
       req.user.userId,
-      req.user.restarurantId
+      req.user.restaurantId
     );
   }
 

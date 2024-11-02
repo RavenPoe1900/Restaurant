@@ -15,7 +15,7 @@ type ReservationWithout = Omit<
   | 'deletedBy'
   | 'version'
   | 'ownerId'
-  | 'restarurantId'
+  | 'restaurantId'
 >;
 export class ReservationDto implements ReservationWithout {
   @ApiProperty({

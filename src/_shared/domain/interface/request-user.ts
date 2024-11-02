@@ -2,7 +2,7 @@ import { Request } from 'express';
 
 export class Payload {
   userId: number;
-  restarurantId: number;
+  restaurantId: number;
   roleName: string;
 }
 

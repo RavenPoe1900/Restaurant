@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums } from '@prisma/client';
+import { $Enums, Reservation } from '@prisma/client';
 
-export class ReservationEntity {
+export class ReservationEntity implements Reservation {
   @ApiProperty({
     description: 'The unique identifier of the reservation',
     example: 1,
@@ -53,7 +53,7 @@ export class ReservationEntity {
     example: 'admin',
     type: String,
   })
-  createdBy?: string;
+  createdBy: string;
 
   @ApiProperty({
     description: 'The user who last updated the reservation record',
@@ -61,7 +61,7 @@ export class ReservationEntity {
     example: 'admin',
     type: String,
   })
-  updatedBy?: string;
+  updatedBy: string;
 
   @ApiProperty({
     description: 'The date when the reservation was deleted, if applicable',
@@ -70,7 +70,7 @@ export class ReservationEntity {
     type: String,
     format: 'date-time',
   })
-  deletedAt?: Date;
+  deletedAt: Date;
 
   @ApiProperty({
     description: 'The user who deleted the reservation record, if applicable',
@@ -78,7 +78,7 @@ export class ReservationEntity {
     example: 'admin',
     type: String,
   })
-  deletedBy?: string;
+  deletedBy: string;
 
   @ApiProperty({
     description: 'The version of the reservation record for optimistic locking',
@@ -93,7 +93,7 @@ export class ReservationEntity {
     example: 1,
     type: Number,
   })
-  ownerId?: number;
+  ownerId: number;
 
   @ApiProperty({
     description: 'The ID of the restaurant associated with the reservation',
@@ -101,7 +101,7 @@ export class ReservationEntity {
     example: 1,
     type: Number,
   })
-  restaurantId?: number;
+  restaurantId: number;
 
   @ApiProperty({
     description: 'Status Reservation',
