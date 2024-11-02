@@ -4,18 +4,27 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Prisma } from '@prisma/client';
-import { PermissionsService } from 'src/permissions/application/permissions.service';
 import { RolesService } from 'src/roles/application/roles.service';
+import { IS_PUBLIC_KEY } from '../insfractuture/public.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
-    private readonly permissionsService: PermissionsService,
-    private readonly rolesService: RolesService
+    private readonly rolesService: RolesService,
+    private reflector: Reflector
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return true;
+    }
     const { user, route } = context.switchToHttp().getRequest();
 
     let httpMethod: string;

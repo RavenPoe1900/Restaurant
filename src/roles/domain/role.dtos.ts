@@ -23,14 +23,15 @@ type RoleWithout = Omit<
   | 'version'
   | 'ownerId'
 >;
+
 export class RoleDto implements RoleWithout {
   @ApiProperty({
     description: 'A name of the entity',
-    example: 'Admin.',
+    example: 'Admin',
     type: String,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Name is required' })
   name: string;
 
   @ApiProperty({
@@ -39,8 +40,8 @@ export class RoleDto implements RoleWithout {
       'This is a detailed description related to the service or service.',
     type: String,
   })
-  @IsString({ message: 'description must be a string' })
-  @IsNotEmpty({ message: 'description is required' })
+  @IsString({ message: 'Description must be a string' })
+  @IsNotEmpty({ message: 'Description is required' })
   description: string;
 
   @ApiProperty({
@@ -48,11 +49,11 @@ export class RoleDto implements RoleWithout {
     type: [Number],
     example: [4, 5],
   })
-  @IsArray({ message: 'permissions must be an array of numbers' })
+  @IsArray({ message: 'Permissions must be an array of numbers' })
   @IsInt({ each: true, message: 'Each item in permissions must be an integer' })
-  @ArrayNotEmpty({ message: 'permissions should not be empty' })
+  @ArrayNotEmpty({ message: 'Permissions should not be empty' })
   @IsOptional()
-  permissions: number[];
+  permissions?: number[]; // Marked as optional
 }
 
 export class UpdateRoleDto extends OmitType(PartialType(RoleDto), [

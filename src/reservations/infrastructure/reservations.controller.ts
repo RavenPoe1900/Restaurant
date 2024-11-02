@@ -22,14 +22,17 @@ import { ApiResponseSwagger } from 'src/_shared/infrastructure/swagger/response.
 
 import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dto';
 import { ReservationsService } from '../application/reservations.service';
-import { ReservationDto, UpdateReservationDto } from '../domain/reservation.dtos';
+import {
+  ReservationDto,
+  UpdateReservationDto,
+} from '../domain/reservation.dtos';
 import { ReservationEntity } from '../domain/reservation.entity';
 import { PaginationReservationDto } from '../domain/pagination-reservation.dto';
 
 const controllerName = 'Reservations';
 @ApiTags('Reservations')
 @Controller({
-  path: 'subReservations',
+  path: 'restaurants',
   version: '1',
 })
 export class ReservationsController {
@@ -51,11 +54,11 @@ export class ReservationsController {
   }
 
   /**
-   * Gets all subReservations. It allows to filter by any field contained in the DTO object of the reservations.
+   * Gets all restaurants. It allows to filter by any field contained in the DTO object of the reservations.
    * @param page Number of the page to retrieve.
-   * @param limit Limit of subReservations to retrieve.
-   * @param filter Filter of the subReservations to be retrieved in stringified JSON format.
-   * @returns subReservations that match a given filter or an error.
+   * @param limit Limit of restaurants to retrieve.
+   * @param filter Filter of the restaurants to be retrieved in stringified JSON format.
+   * @returns restaurants that match a given filter or an error.
    */
 
   @HttpCode(HttpStatus.OK)

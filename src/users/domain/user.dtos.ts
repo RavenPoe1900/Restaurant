@@ -25,11 +25,12 @@ type UserWithout = Omit<
   | 'deletedBy'
   | 'version'
   | 'ownerId'
-  | 'restarurantId'
+  | 'restaurantId'
 >;
 
 export class UserDto implements UserWithout {
   @ApiProperty({
+    type: String,
     example: 'http://example.com/user/photo.jpg',
     description: "The URL of the user's photo",
   })
@@ -39,6 +40,7 @@ export class UserDto implements UserWithout {
   photo: string;
 
   @ApiProperty({
+    type: String,
     example: '323 2032',
     description: 'Phone of the user',
   })
@@ -47,6 +49,7 @@ export class UserDto implements UserWithout {
   phone: string;
 
   @ApiProperty({
+    type: String,
     example: 'hello@domain.com',
     description: 'Email of the user',
   })
@@ -55,6 +58,7 @@ export class UserDto implements UserWithout {
   email: string;
 
   @ApiProperty({
+    type: Boolean,
     example: true,
     description: 'Whether the user is active or not',
   })
@@ -63,6 +67,7 @@ export class UserDto implements UserWithout {
   isActive: boolean;
 
   @ApiProperty({
+    type: String,
     example: 'John',
     description: 'First name of the user',
   })
@@ -71,6 +76,7 @@ export class UserDto implements UserWithout {
   firstName: string;
 
   @ApiProperty({
+    type: String,
     example: 'Doe',
     description: 'Last name of the user',
   })
@@ -79,6 +85,7 @@ export class UserDto implements UserWithout {
   lastName: string;
 
   @ApiProperty({
+    type: String,
     description: `The password for the user. Must contain at least 8 characters, one uppercase letter, one lowercase letter, 
       one number, and one special character.`,
     example: 'P@ssw0rd!',
@@ -100,6 +107,7 @@ export class UserDto implements UserWithout {
   password: string;
 
   @ApiProperty({
+    type: Number,
     example: 1,
     description: 'The unique identifier of the role associated with the user',
   })

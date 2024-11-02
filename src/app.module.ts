@@ -10,6 +10,8 @@ import { AuthGuard } from './_shared/auth/application/auth.guard';
 import { ClientsModule } from './clients/clients.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { OrdersModule } from './orders/orders.module';
+import { RestaurantsModule } from './restaurants/restaurants.module';
 
 @Module({
   imports: [
@@ -19,12 +21,14 @@ import { ScheduleModule } from '@nestjs/schedule';
       secret: process.env.SECRET,
       signOptions: { expiresIn: process.env.EXPIRESIN },
     }),
+    RestaurantsModule,
     RolesModule,
     PermissionsModule,
     UsersModule,
     AuthModule,
     ClientsModule,
     ReservationsModule,
+    OrdersModule,
   ],
   controllers: [],
   providers: [

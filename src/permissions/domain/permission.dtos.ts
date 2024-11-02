@@ -15,45 +15,43 @@ type PermissionWithout = Omit<
   | 'deletedBy'
   | 'version'
 >;
+
 export class PermissionDto implements PermissionWithout {
-  createdAt: Date;
-  updatedAt: Date;
-  createdBy: string;
-  updatedBy: string;
-  deletedAt: Date;
-  deletedBy: string;
-  version: number;
   @ApiProperty({
     description: 'The name of the path',
+    example: '/admin/create',
+    type: String,
   })
-  @IsString({ message: 'path must be a string' })
-  @IsNotEmpty({ message: 'path cannot be empty' })
-  @IsNotEmpty()
+  @IsString({ message: 'Path must be a string' })
+  @IsNotEmpty({ message: 'Path cannot be empty' })
   path: string;
 
   @ApiProperty({
     description: 'The method type associated with the permission',
+    example: 'create',
+    type: String,
   })
-  @IsString({ message: 'method must be a string' })
-  @IsNotEmpty({ message: 'method cannot be empty' })
-  @IsNotEmpty()
+  @IsString({ message: 'Method must be a string' })
+  @IsNotEmpty({ message: 'Method cannot be empty' })
   method: string;
 
   @ApiProperty({
     description: 'A detailed description of the permission',
     example: 'Allows creating new administrative accounts',
     required: false,
+    type: String,
   })
-  @IsString({ message: 'description must be a string' })
-  @IsNotEmpty()
+  @IsString({ message: 'Description must be a string' })
+  @IsNotEmpty({ message: 'Method cannot be empty' })
   description: string;
 
   @ApiProperty({
     description: 'Indicates whether the permission is currently active',
     example: true,
+    type: Boolean,
   })
-  @IsBoolean({ message: 'active must be a boolean' })
-  @IsNotEmpty()
+  @IsBoolean({ message: 'Active must be a boolean' })
+  @IsNotEmpty({ message: 'Active cannot be empty' })
   active: boolean;
 }
 

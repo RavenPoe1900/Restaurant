@@ -1,7 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsInt, IsNotEmpty } from 'class-validator';
+import { IsDate, IsEnum, IsInt, IsNotEmpty, IsNumber } from 'class-validator';
 import { OrderEntity } from './orders.entity';
+import { $Enums } from '@prisma/client';
+import { WaiterOrderDto } from './waiterOrders.dtos';
 
 type OrderWithoutId = Omit<
   OrderEntity,
@@ -15,40 +17,19 @@ type OrderWithoutId = Omit<
   | 'deletedBy'
   | 'version'
   | 'ownerId'
-  | 'companyId'
+  | 'restaurantId'
 >;
-export class OrderDto implements OrderWithoutId {
+export class OrderDto extends WaiterOrderDto implements OrderWithoutId {
   @ApiProperty({
-    description: 'The ID of the client placing the order',
-    example: 1,
-    type: Number,
+    description: 'Status Order',
+    example: $Enums.OrdenStatusEnum.CLOSE,
+    enum: $Enums.OrdenStatusEnum,
+  })
+  @IsEnum($Enums.ReservationStatusEnum, {
+    message: 'Name must be a valid enum value',
   })
   @IsNotEmpty()
-  @IsInt()
-  clientId: number;
-
-  @ApiProperty({
-    description:
-      'The total amount of the order in the currency of the restaurant',
-    example: 29.99,
-    type: Number,
-  })
-  @IsNotEmpty()
-  @IsFloat()
-  total: number;
-
-  @ApiProperty({
-    description: 'The date when the order was placed',
-    example: '2024-12-25T00:00:00.000Z',
-    type: String,
-    format: 'date-time',
-  })
-  @IsNotEmpty()
-  @IsDate()
-  date: Date;
+  status: $Enums.OrdenStatusEnum;
 }
 
 export class UpdateOrderDto extends PartialType(OrderDto) {}
-function IsFloat(): (target: OrderDto, propertyKey: 'total') => void {
-  throw new Error('Function not implemented.');
-}
