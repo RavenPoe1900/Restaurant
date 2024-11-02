@@ -55,13 +55,12 @@ export class UsersService
   ): Promise<User> {
     const hashedPassword = await hashPassword(createUserDto.password);
     createUserDto.password = hashedPassword;
-    return null;
-    // return await this.create({
-    //   data: {
-    //     ...createUserDto,
-    //     ownerId: userId,
-    //     restaurantId: restaurantId,
-    //   },
-    // });
+    return await this.create({
+      data: {
+        ...createUserDto,
+        ownerId: userId,
+        restaurantId: restaurantId,
+      },
+    });
   }
 }
