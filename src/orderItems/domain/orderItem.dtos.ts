@@ -27,7 +27,7 @@ type OrderItemWithoutId = Omit<
   | 'ownerId'
   | 'restaurantId'
 >;
-export class OrderItemDto implements OrderItemWithoutId {
+export class OrderItemDto  implements OrderItemWithoutId {
   @ApiProperty({
     description: 'Quantity of the product in the order item',
     example: 2,

@@ -182,8 +182,27 @@ model OrderItem {
   version      Int       @default(0)
   ownerId      Int?      @map("owner_id")
   restaurantId Int?      @map("restaurant_id")
+  items        Item[]
 
   @@map("order_items")
+}
+
+model Item {
+  id           Int       @id @default(autoincrement())
+  name         String    @map("item_name")
+  description  String?   @map("item_description")
+  price        Float
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  createdBy    String?   @map("created_by")
+  updatedBy    String?   @map("updated_by")
+  deletedAt    DateTime? @map("deleted_at")
+  deletedBy    String?   @map("deleted_by")
+  version      Int       @default(0)
+  restaurantId Int?      @map("restaurant_id")
+  ownerId      Int?      @map("owner_id")
+  orderItem    OrderItem @relation(fields: [orderItemId], references: [id])
+  orderItemId  Int       @map("order_item")
 }
 
 enum ReservationStatusEnum {

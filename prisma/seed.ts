@@ -284,6 +284,42 @@ async function main() {
     },
   });
 
+  await prisma.item.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      name: 'Cheeseburger',
+      description: 'A delicious cheeseburger with lettuce and tomato.',
+      price: 9.99,
+      restaurantId: 1,
+      orderItem: { connect: { id: 1 } },
+    },
+  });
+
+  await prisma.item.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      name: 'Margherita Pizza',
+      description: 'Classic pizza with fresh mozzarella and basil.',
+      price: 12.99,
+      restaurantId: 1,
+      orderItem: { connect: { id: 1 } },
+    },
+  });
+
+  await prisma.item.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: 'Caesar Salad',
+      description: 'Crisp romaine lettuce with Caesar dressing.',
+      price: 7.99,
+      restaurantId: 1,
+      orderItem: { connect: { id: 1 } },
+    },
+  });
+
   console.log('Seed data created successfully.');
 }
 
