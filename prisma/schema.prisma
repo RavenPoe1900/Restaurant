@@ -68,7 +68,7 @@ model Role {
   ownerId      Int?         @map("owner_id")
   version      Int          @default(0)
   restaurantId Int?         @map("restaurant_id")
-  users User[]
+  users        User[]
 }
 
 model Permission {
@@ -102,7 +102,7 @@ model Client {
   deletedAt    DateTime?     @map("deleted_at")
   deletedBy    String?       @map("deleted_by")
   version      Int           @default(0)
-  ownerId      Int?          @map("owner_id")
+  ownerId      Int           @map("owner_id")
   reservations Reservation[]
   table        Table[]
 }
@@ -123,8 +123,6 @@ model Reservation {
   version      Int                   @default(0)
   ownerId      Int?                  @map("owner_id")
   restaurantId Int?                  @map("restaurant_id")
-
-  @@unique([clientId, restaurantId])
 }
 
 model Table {
@@ -144,15 +142,12 @@ model Table {
   version      Int             @default(0)
   ownerId      Int?            @map("owner_id")
   restaurantId Int?            @map("restaurant_id")
-
-  @@unique([number, restaurantId])
 }
 
 model Order {
   id           Int             @id @default(autoincrement())
   totalPrice   Float?          @map("total_price")
-  number       Int             @unique() @default(autoincrement())
-  date         DateTime
+  date         String
   status       OrdenStatusEnum
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
@@ -174,7 +169,7 @@ model OrderItem {
   price        Float
   orderId      Int
   order        Order     @relation(fields: [orderId], references: [id])
-  date         DateTime
+  date         String
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   createdBy    String?   @map("created_by")

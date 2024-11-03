@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsInt, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDate, IsInt, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { OrderEntity } from './orders.entity';
 
 type WaiterOrderWithoutId = Omit<
@@ -20,25 +20,6 @@ type WaiterOrderWithoutId = Omit<
 >;
 export class WaiterOrderDto implements WaiterOrderWithoutId {
   @ApiProperty({
-    description: 'The ID of the client placing the order',
-    example: 1,
-    type: Number,
-  })
-  @IsNotEmpty()
-  @IsInt()
-  clientId: number;
-
-  @ApiProperty({
-    description:
-      'The total amount of the order in the currency of the restaurant',
-    example: 29.99,
-    type: Number,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  total: number;
-
-  @ApiProperty({
     description: 'Price of the product in the order item',
     example: 25.0,
     type: Number,
@@ -54,8 +35,8 @@ export class WaiterOrderDto implements WaiterOrderWithoutId {
     format: 'date-time',
   })
   @IsNotEmpty()
-  @IsDate()
-  date: Date;
+  @IsString()
+  date: string;
 
   @ApiProperty({
     description: 'The ID of the table of the order record',

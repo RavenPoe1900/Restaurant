@@ -7,7 +7,7 @@ export class PrismaGenericService<T, C, R, U, D, F> {
                               processing the request`;
   badRequestException = 'The id does not exist';
   model;
-  filter = (id: string, restaurantId) => {
+  filter = (id: string, restaurantId?: number) => {
     return { where: { id: +id, restaurantId: restaurantId } };
   };
 

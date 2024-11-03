@@ -63,11 +63,15 @@ export class PermissionsController {
   @ApiResponseSwagger(findSwagger(PermissionEntity, controllerName))
   @Get()
   async findAll(
-    @Query() pagination: PaginationPermissionDto
+    @Query() pagination: PaginationPermissionDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<PermissionEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
     });
   }
 

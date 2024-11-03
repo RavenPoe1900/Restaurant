@@ -34,7 +34,7 @@ import { RequestUser } from 'src/_shared/domain/interface/request-user';
 const controllerName = 'Reservations';
 @ApiTags('Reservations')
 @Controller({
-  path: 'restaurants',
+  path: 'reservations',
   version: '1',
 })
 export class ReservationsController {
@@ -50,9 +50,17 @@ export class ReservationsController {
   @ApiResponseSwagger(createSwagger(ReservationEntity, controllerName))
   @Post()
   async createReservation(
-    @Body() body: ReservationDto
+    @Body() body: ReservationDto,
+    @Request() req: RequestUser
   ): Promise<ReservationEntity> {
-    return await this.service.create({ data: body });
+    return await this.service.create({
+      data: {
+        ...body,
+        ownerId: req.user.userId,
+        restaurantId: req.user.restaurantId,
+      },
+      select: this.service.reservationSelect,
+    });
   }
 
   /**
@@ -67,11 +75,16 @@ export class ReservationsController {
   @ApiResponseSwagger(findSwagger(ReservationEntity, controllerName))
   @Get()
   async findAll(
-    @Query() pagination: PaginationReservationDto
+    @Query() pagination: PaginationReservationDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<ReservationEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      select: this.service.reservationSelect,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
     });
   }
 
@@ -88,7 +101,10 @@ export class ReservationsController {
     @Param('id') id: string,
     @Request() req: RequestUser
   ): Promise<ReservationEntity> {
-    return this.service.findOne(this.service.filter(id, req.user.restaurantId));
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.reservationSelect,
+    });
   }
 
   /**
@@ -108,7 +124,8 @@ export class ReservationsController {
   ): Promise<ReservationEntity> {
     return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateReservationDto,
-      where: { id: +id },
+      where: { id: +id, restaurantId: req.user.restaurantId },
+      select: this.service.reservationSelect,
     });
   }
 

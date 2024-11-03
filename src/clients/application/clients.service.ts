@@ -17,4 +17,32 @@ export class ClientsService extends PrismaGenericService<
   constructor(private readonly prismaService: PrismaService) {
     super(prismaService.client);
   }
+  clientSelect: Prisma.ClientSelect = {
+    id: true,
+    name: true,
+    email: true,
+    restaurant: {
+      select: {
+        name: true,
+        phone: true,
+        licenseType: true,
+        rating: true,
+      },
+    },
+    createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
+    deletedAt: true,
+    deletedBy: true,
+    version: true,
+    ownerId: true,
+    reservations: {
+      select: {
+        date: true,
+        time: true,
+        status: true,
+      },
+    },
+  };
 }

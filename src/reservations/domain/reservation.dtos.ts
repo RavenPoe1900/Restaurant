@@ -31,10 +31,9 @@ export class ReservationDto implements ReservationWithout {
     description: 'The date of the reservation',
     example: '2024-12-25T00:00:00.000Z',
     type: String,
-    format: 'date-time',
   })
   @IsNotEmpty()
-  @IsDate()
+  @IsString()
   date: Date;
 
   @ApiProperty({

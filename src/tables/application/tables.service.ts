@@ -29,6 +29,36 @@ export class TablesService extends PrismaGenericService<
     super(prismaService.table);
   }
 
+  tableSelect: Prisma.TableSelect = {
+    id: true,
+    number: true,
+    status: true,
+    totalPrice: true,
+    clientId: true,
+    client: {
+      select: {
+        name: true,
+        email: true,
+      },
+    },
+    orders: {
+      select: {
+        id: true,
+        status: true,
+        totalPrice: true,
+      },
+    },
+    createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
+    deletedAt: true,
+    deletedBy: true,
+    version: true,
+    ownerId: true,
+    restaurantId: true,
+  };
+
   cashierFilter(orderId: number, userId: number, restaurantId: number) {
     return {
       where: {
@@ -151,6 +181,7 @@ export class TablesService extends PrismaGenericService<
     return this.update(this.filter(tableId, restaurantId), {
       data: { ...updateTableDto, totalPrice: totalPrice },
       where: { id: +tableId, restaurantId: restaurantId },
+      select: this.tableSelect,
     });
   }
 }

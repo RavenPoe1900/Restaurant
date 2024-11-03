@@ -21,6 +21,27 @@ export class RolesService
   constructor(private readonly prismaService: PrismaService) {
     super(prismaService.role);
   }
+  roleSelect: Prisma.RoleSelect = {
+    id: true,
+    name: true,
+    description: true,
+    permissions: {
+      select: {
+        path: true,
+        method: true,
+      },
+    },
+    createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
+    deletedAt: true,
+    deletedBy: true,
+    ownerId: true,
+    version: true,
+    restaurantId: true,
+  };
+
   async onModuleInit() {
     const restaurant = await this.prismaService.restaurant.findUnique({
       where: {
@@ -59,6 +80,7 @@ export class RolesService
         permissions: permissionCreateNested,
         ownerId: userId,
       },
+      select: this.roleSelect,
     };
     return await this.create(serviceCreateArgs);
   }
@@ -82,7 +104,8 @@ export class RolesService
     };
     return this.update(this.filter(id, restaurantId), {
       data: roleUpdateInput,
-      where: { id: +id },
+      where: { id: +id, restaurantId: restaurantId },
+      select: this.roleSelect,
     });
   }
 }

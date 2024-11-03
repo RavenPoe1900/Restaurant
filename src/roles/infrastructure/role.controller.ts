@@ -64,11 +64,16 @@ export class RolesController {
   @ApiResponseSwagger(findSwagger(RoleEntity, controllerName))
   @Get()
   findAll(
-    @Query() pagination: PaginationRoleDto
+    @Query() pagination: PaginationRoleDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<RoleEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      select: this.service.roleSelect,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
     });
   }
 
@@ -85,7 +90,10 @@ export class RolesController {
     @Param('id') id: string,
     @Request() req: RequestUser
   ): Promise<RoleEntity> {
-    return this.service.findOne(this.service.filter(id, req.user.restaurantId));
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.roleSelect,
+    });
   }
 
   /**
@@ -103,7 +111,7 @@ export class RolesController {
     @Body() updateRoleDto: UpdateRoleDto,
     @Request() req: RequestUser
   ): Promise<RoleEntity> {
-    return this.service.updateService(id, updateRoleDto, req.user.userId);
+    return this.service.updateService(id, updateRoleDto, req.user.restaurantId);
   }
 
   /**

@@ -30,7 +30,7 @@ type RestaurantWithoutId = Omit<
 export class RestaurantDto implements RestaurantWithoutId {
   @ApiProperty({
     description: 'Phone number of the restaurant',
-    example: '123-456-7890',
+    example: '+1 203456789',
     type: String,
   })
   @IsPhoneNumber(null, { message: 'Phone number must be a valid phone number' })

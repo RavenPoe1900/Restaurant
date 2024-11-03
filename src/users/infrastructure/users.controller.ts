@@ -74,6 +74,8 @@ export class UsersController {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      where: { restaurantId: req.user.restaurantId },
+      select: this.service.userSelect,
     });
   }
 
@@ -92,6 +94,7 @@ export class UsersController {
   ): Promise<UserEntity> {
     return this.service.findOne({
       ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.userSelect,
     });
   }
 
@@ -112,7 +115,8 @@ export class UsersController {
   ): Promise<UserEntity> {
     return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateUserDto,
-      where: { id: +id },
+      where: { id: +id, restaurantId: req.user.restaurantId },
+      select: this.service.userSelect,
     });
   }
 

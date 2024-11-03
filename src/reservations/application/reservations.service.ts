@@ -19,6 +19,26 @@ export class ReservationsService extends PrismaGenericService<
     super(prismaService.reservation);
   }
 
+  reservationSelect: Prisma.ReservationSelect = {
+    id: true,
+    clientId: true,
+    client: {
+      select: { name: true, email: true },
+    },
+    status: true,
+    date: true,
+    time: true,
+    createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
+    deletedAt: true,
+    deletedBy: true,
+    version: true,
+    ownerId: true,
+    restaurantId: true,
+  };
+
   @Cron('0 0 * * *')
   async handleCron() {
     const now = new Date();

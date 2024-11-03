@@ -108,14 +108,7 @@ async function main() {
   // Upsert mesas
   await prisma.table.upsert({
     where: {
-      number_restaurantId: {
-        number: 1,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type A' },
-          })
-        )?.id,
-      },
+      id: 1,
     },
     update: {},
     create: {
@@ -135,14 +128,7 @@ async function main() {
 
   await prisma.table.upsert({
     where: {
-      number_restaurantId: {
-        number: 2,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type A' },
-          })
-        )?.id,
-      },
+      id: 2,
     },
     update: {},
     create: {
@@ -162,14 +148,7 @@ async function main() {
 
   await prisma.table.upsert({
     where: {
-      number_restaurantId: {
-        number: 3,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type B' },
-          })
-        )?.id,
-      },
+      id: 1,
     },
     update: {},
     create: {
@@ -190,14 +169,7 @@ async function main() {
   // Upsert reservas
   await prisma.reservation.upsert({
     where: {
-      clientId_restaurantId: {
-        clientId: 1,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type A' },
-          })
-        )?.id,
-      },
+      id: 1,
     },
     update: {},
     create: {
@@ -216,14 +188,7 @@ async function main() {
 
   await prisma.reservation.upsert({
     where: {
-      clientId_restaurantId: {
-        clientId: 2,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type A' },
-          })
-        )?.id,
-      },
+      id: 2,
     },
     update: {},
     create: {
@@ -243,27 +208,13 @@ async function main() {
   // Upsert órdenes
   await prisma.order.upsert({
     where: {
-      number: 1,
+      id: 1,
     },
     update: {},
     create: {
-      number: 1,
-      date: new Date(),
+      date: new Date().toString(),
       status: 'OPEN',
-      tableId: (
-        await prisma.table.findUnique({
-          where: {
-            number_restaurantId: {
-              number: 1,
-              restaurantId: (
-                await prisma.restaurant.findUnique({
-                  where: { licenseType: 'Type A' },
-                })
-              )?.id,
-            },
-          },
-        })
-      )?.id,
+      tableId: 1,
       restaurantId: (
         await prisma.restaurant.findUnique({
           where: { licenseType: 'Type A' },
@@ -271,8 +222,20 @@ async function main() {
       )?.id,
       items: {
         create: [
-          { quantity: 2, price: 25.0, date: new Date(), ownerId: adminUser.id },
-          { quantity: 1, price: 50.0, date: new Date(), ownerId: adminUser.id },
+          {
+            quantity: 2,
+            price: 25.0,
+            date: new Date().toString(),
+            ownerId: adminUser.id,
+            restaurantId: 1,
+          },
+          {
+            quantity: 1,
+            price: 50.0,
+            date: new Date().toString(),
+            ownerId: adminUser.id,
+            restaurantId: 1,
+          },
         ],
       },
       ownerId: adminUser.id,
@@ -280,26 +243,12 @@ async function main() {
   });
 
   await prisma.order.upsert({
-    where: { number: 2 },
+    where: { id: 2 },
     update: {},
     create: {
-      date: new Date(),
-      number: 2,
+      date: new Date().toString(),
       status: 'OPEN',
-      tableId: (
-        await prisma.table.findUnique({
-          where: {
-            number_restaurantId: {
-              number: 2,
-              restaurantId: (
-                await prisma.restaurant.findUnique({
-                  where: { licenseType: 'Type A' },
-                })
-              )?.id,
-            },
-          },
-        })
-      )?.id,
+      tableId: 2,
       restaurantId: (
         await prisma.restaurant.findUnique({
           where: { licenseType: 'Type A' },
@@ -307,8 +256,20 @@ async function main() {
       )?.id,
       items: {
         create: [
-          { quantity: 3, price: 30.0, date: new Date(), ownerId: adminUser.id },
-          { quantity: 1, price: 60.0, date: new Date(), ownerId: adminUser.id },
+          {
+            quantity: 3,
+            price: 30.0,
+            date: new Date().toString(),
+            ownerId: adminUser.id,
+            restaurantId: 1,
+          },
+          {
+            quantity: 1,
+            price: 60.0,
+            date: new Date().toString(),
+            ownerId: adminUser.id,
+            restaurantId: 1,
+          },
         ],
       },
       ownerId: adminUser.id,

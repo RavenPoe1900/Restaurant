@@ -45,8 +45,18 @@ export class OrderItemsController {
   @HttpCode(HttpStatus.CREATED)
   @ApiResponseSwagger(createSwagger(OrderItemDto, controllerName))
   @Post()
-  async createOrderItem(@Body() body: OrderItemDto): Promise<OrderItemEntity> {
-    return await this.service.create({ data: body });
+  async createOrderItem(
+    @Body() body: OrderItemDto,
+    @Request() req: RequestUser
+  ): Promise<OrderItemEntity> {
+    return await this.service.create({
+      data: {
+        ...body,
+        ownerId: req.user.userId,
+        restaurantId: req.user.restaurantId,
+      },
+      select: this.service.orderItemSelect,
+    });
   }
 
   /**
@@ -61,11 +71,16 @@ export class OrderItemsController {
   @ApiResponseSwagger(findSwagger(OrderItemDto, controllerName))
   @Get()
   async findAll(
-    @Query() pagination: PaginationOrderItemDto
+    @Query() pagination: PaginationOrderItemDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<OrderItemEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
+      select: this.service.orderItemSelect,
     });
   }
 
@@ -82,7 +97,10 @@ export class OrderItemsController {
     @Param('id') id: string,
     @Request() req: RequestUser
   ): Promise<OrderItemEntity> {
-    return this.service.findOne(this.service.filter(id, req.user.restaurantId));
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.orderItemSelect,
+    });
   }
 
   /**
@@ -102,7 +120,8 @@ export class OrderItemsController {
   ): Promise<OrderItemEntity> {
     return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateOrderItemDto,
-      where: { id: +id },
+      where: { id: +id, restaurantId: req.user.restaurantId },
+      select: this.service.orderItemSelect,
     });
   }
 

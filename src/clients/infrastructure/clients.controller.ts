@@ -45,8 +45,18 @@ export class ClientsController {
   @HttpCode(HttpStatus.CREATED)
   @ApiResponseSwagger(createSwagger(ClientEntity, controllerName))
   @Post()
-  async createClient(@Body() body: ClientDto): Promise<ClientEntity> {
-    return await this.service.create({ data: body });
+  async createClient(
+    @Body() body: ClientDto,
+    @Request() req: RequestUser
+  ): Promise<ClientEntity> {
+    return await this.service.create({
+      data: {
+        ...body,
+        ownerId: req.user.userId,
+        restaurantId: req.user.restaurantId,
+      },
+      select: this.service.clientSelect,
+    });
   }
 
   /**
@@ -61,11 +71,16 @@ export class ClientsController {
   @ApiResponseSwagger(findSwagger(ClientEntity, controllerName))
   @Get()
   async findAll(
-    @Query() pagination: PaginationClientDto
+    @Query() pagination: PaginationClientDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<ClientEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      select: this.service.clientSelect,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
     });
   }
 
@@ -82,7 +97,10 @@ export class ClientsController {
     @Param('id') id: string,
     @Request() req: RequestUser
   ): Promise<ClientEntity> {
-    return this.service.findOne(this.service.filter(id, req.user.restaurantId));
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.clientSelect,
+    });
   }
 
   /**
@@ -102,7 +120,8 @@ export class ClientsController {
   ): Promise<ClientEntity> {
     return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateClientDto,
-      where: { id: +id },
+      where: { id: +id, restaurantId: req.user.restaurantId },
+      select: this.service.clientSelect,
     });
   }
 

@@ -61,9 +61,9 @@ export class OrderItemDto implements OrderItemWithoutId {
     example: '2024-01-01T00:00:00Z',
     type: String,
   })
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  date: Date;
+  date: string;
 }
 
 export class UpdateOrderItemDto extends PartialType(OrderItemDto) {}
