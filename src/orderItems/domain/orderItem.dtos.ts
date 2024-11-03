@@ -11,6 +11,7 @@ import {
   IsString,
 } from 'class-validator';
 import { OrderItemEntity } from './orderItem.entity';
+import { TransformStringToDate } from 'src/_shared/transform/stringToDate.transform';
 
 type OrderItemWithoutId = Omit<
   OrderItemEntity,
@@ -61,9 +62,10 @@ export class OrderItemDto implements OrderItemWithoutId {
     example: '2024-01-01T00:00:00Z',
     type: String,
   })
-  @IsString()
+  @TransformStringToDate()
   @IsNotEmpty()
-  date: string;
+  @IsDate()
+  date: Date;
 }
 
 export class UpdateOrderItemDto extends PartialType(OrderItemDto) {}

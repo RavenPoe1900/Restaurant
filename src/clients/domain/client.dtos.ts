@@ -1,7 +1,13 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Client } from '@prisma/client';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 type ClientWithout = Omit<
   Client,
@@ -35,6 +41,16 @@ export class ClientDto implements ClientWithout {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @ApiProperty({
+    description: 'The age of the user',
+    example: 30,
+    type: Number,
+  })
+  @IsInt() 
+  @IsPositive() 
+  @IsNotEmpty() 
+  age: number;
 }
 
 export class UpdateClientDto extends PartialType(ClientDto) {}

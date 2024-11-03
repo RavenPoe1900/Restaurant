@@ -18,7 +18,9 @@ model Restaurant {
   user        User[]
   rating      Int       @default(0)
   phone       String
-  name        String?
+  name        String
+  address     String    @unique()
+  capacity    Int
   licenseType String    @unique
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
@@ -92,6 +94,7 @@ model Permission {
 model Client {
   id           Int           @id @default(autoincrement())
   name         String
+  age          Int
   email        String        @unique
   restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
   restaurantId Int?          @map("restaurant_id")
@@ -147,7 +150,7 @@ model Table {
 model Order {
   id           Int             @id @default(autoincrement())
   totalPrice   Float?          @map("total_price")
-  date         String
+  date         DateTime
   status       OrdenStatusEnum
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
@@ -169,7 +172,7 @@ model OrderItem {
   price        Float
   orderId      Int
   order        Order     @relation(fields: [orderId], references: [id])
-  date         String
+  date         DateTime
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   createdBy    String?   @map("created_by")

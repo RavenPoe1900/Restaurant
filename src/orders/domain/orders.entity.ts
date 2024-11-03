@@ -30,7 +30,7 @@ export class OrderEntity extends BaseEntity implements Order {
     type: String,
     format: 'date-time',
   })
-  date: string;
+  date: Date;
 
   @ApiProperty({
     description: 'The ID of the restaurant associated with the order',

@@ -52,6 +52,8 @@ async function main() {
       name: 'Restaurant A',
       phone: '123-456-7890',
       licenseType: 'Type A',
+      capacity: 123,
+      address: 'sdsdads',
       rating: 5,
       createdBy: 'admin@example.com',
       ownerId: adminUser.id,
@@ -61,11 +63,13 @@ async function main() {
             name: 'Client A',
             email: 'clientA@example.com',
             ownerId: adminUser.id,
+            age: 12,
           },
           {
             name: 'Client B',
             email: 'clientB@example.com',
             ownerId: adminUser.id,
+            age: 18,
           },
         ],
       },
@@ -79,6 +83,8 @@ async function main() {
       name: 'Restaurant B',
       phone: '098-765-4321',
       licenseType: 'Type B',
+      capacity: 123,
+      address: 'sdsdad1s',
       rating: 4,
       createdBy: 'admin@example.com',
       ownerId: adminUser.id,
@@ -92,6 +98,7 @@ async function main() {
       name: 'Client A',
       email: 'clientA@example.com',
       ownerId: adminUser.id,
+      age: 18,
     },
   });
 
@@ -102,6 +109,7 @@ async function main() {
       name: 'Client B',
       email: 'clientB@example.com',
       ownerId: adminUser.id,
+      age: 18,
     },
   });
 
@@ -212,7 +220,7 @@ async function main() {
     },
     update: {},
     create: {
-      date: new Date().toString(),
+      date: new Date(),
       status: 'OPEN',
       tableId: 1,
       restaurantId: (
@@ -225,14 +233,14 @@ async function main() {
           {
             quantity: 2,
             price: 25.0,
-            date: new Date().toString(),
+            date: new Date(),
             ownerId: adminUser.id,
             restaurantId: 1,
           },
           {
             quantity: 1,
             price: 50.0,
-            date: new Date().toString(),
+            date: new Date(),
             ownerId: adminUser.id,
             restaurantId: 1,
           },
@@ -246,7 +254,7 @@ async function main() {
     where: { id: 2 },
     update: {},
     create: {
-      date: new Date().toString(),
+      date: new Date(),
       status: 'OPEN',
       tableId: 2,
       restaurantId: (
@@ -259,14 +267,14 @@ async function main() {
           {
             quantity: 3,
             price: 30.0,
-            date: new Date().toString(),
+            date: new Date(),
             ownerId: adminUser.id,
             restaurantId: 1,
           },
           {
             quantity: 1,
             price: 60.0,
-            date: new Date().toString(),
+            date: new Date(),
             ownerId: adminUser.id,
             restaurantId: 1,
           },

@@ -24,6 +24,9 @@ export class RestaurantsService
     const userData: Prisma.RestaurantCreateInput = {
       phone: process.env.RESTAURANT_PHONE,
       licenseType: process.env.RESTAURANT_LICENSE_TYPE,
+      name: 'Camilo',
+      address: 'Casa',
+      capacity: 123,
     };
     await this.model.upsert({
       where: { phone: userData.phone, licenseType: userData.licenseType },

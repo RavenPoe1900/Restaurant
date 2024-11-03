@@ -10,6 +10,7 @@ import {
   IsPhoneNumber,
   IsPositive,
   IsString,
+  MaxLength,
 } from 'class-validator';
 import { RestaurantEntity } from './restaurants.entity';
 
@@ -66,6 +67,27 @@ export class RestaurantDto implements RestaurantWithoutId {
   @IsInt({ message: 'Rating must be an integer' })
   @IsPositive({ message: 'Rating must be a positive number' })
   rating: number;
+
+  @ApiProperty({
+    description: 'The address of the restaurant',
+    example: '123 Main St, Springfield, USA',
+    type: String,
+    maxLength: 255,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  address: string;
+
+  @ApiProperty({
+    description: 'The seating capacity of the restaurant',
+    example: 100,
+    type: Number,
+  })
+  @IsInt()
+  @IsPositive()
+  @IsNotEmpty()
+  capacity: number;
 }
 
 export class UpdateRestaurantDto extends PartialType(RestaurantDto) {}

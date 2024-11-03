@@ -35,7 +35,7 @@ export class OrderItemEntity implements OrderItem {
     example: '2024-01-01T00:00:00Z',
     type: String,
   })
-  date: string;
+  date: Date;
 
   @ApiProperty({
     description: 'Date when the order item was created',
