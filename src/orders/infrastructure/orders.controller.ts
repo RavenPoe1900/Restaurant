@@ -43,7 +43,7 @@ export class OrdersController {
    */
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseSwagger(createSwagger(OrderDto, controllerName))
+  @ApiResponseSwagger(createSwagger(OrderEntity, controllerName))
   @Post()
   async createOrder(
     @Body() body: OrderDto,
@@ -63,7 +63,7 @@ export class OrdersController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findSwagger(OrderDto, controllerName))
+  @ApiResponseSwagger(findSwagger(OrderEntity, controllerName))
   @Get()
   async findAll(
     @Query() pagination: PaginationOrderDto
@@ -81,7 +81,7 @@ export class OrdersController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findOneSwagger(OrderDto, controllerName))
+  @ApiResponseSwagger(findOneSwagger(OrderEntity, controllerName))
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<OrderEntity> {
     return this.service.findOne(this.service.filter(id));
@@ -95,7 +95,7 @@ export class OrdersController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(OrderDto, controllerName))
+  @ApiResponseSwagger(updateSwagger(OrderEntity, controllerName))
   @Patch(':id')
   async updateOrder(
     @Param('id') id: string,
@@ -114,7 +114,7 @@ export class OrdersController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(deleteSwagger(OrderDto, controllerName))
+  @ApiResponseSwagger(deleteSwagger(OrderEntity, controllerName))
   @Delete(':id')
   async deleteOrder(@Param('id') id: string): Promise<OrderEntity> {
     return this.service.remove(

@@ -11,6 +11,7 @@ import { IUserAuth } from 'src/_shared/interface/userAuth.interface';
 import { UsersService } from 'src/users/application/users.service';
 import { SignUpDto } from '../domain/signUp.dto';
 import { RestaurantsService } from 'src/restaurants/application/restaurants.service';
+import { SignUpResponseDto } from '../domain/signUpResponse.dto';
 
 @Injectable()
 export class AuthService {
@@ -55,12 +56,13 @@ export class AuthService {
     };
   }
 
-  async signUp(signUpDto: SignUpDto) {
+  async signUp(signUpDto: SignUpDto):Promise<SignUpResponseDto> {
     const userData: Prisma.UserCreateInput = signUpDto;
     try {
       const user = (await this.usersService.create({
         data: { ...userData, role: { connect: { name: 'user' } } },
       })) as IUserAuth;
+      return { message: 'User successfully registered' };
     } catch (e) {
       if (e.message === 'An unexpected error occurred')
         throw new BadRequestException(

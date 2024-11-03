@@ -41,7 +41,7 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseSwagger(createSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(createSwagger(ClientEntity, controllerName))
   @Post()
   async createClient(@Body() body: ClientDto): Promise<ClientEntity> {
     return await this.service.create({ data: body });
@@ -56,7 +56,7 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(findSwagger(ClientEntity, controllerName))
   @Get()
   async findAll(
     @Query() pagination: PaginationClientDto
@@ -74,7 +74,7 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findOneSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(findOneSwagger(ClientEntity, controllerName))
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<ClientEntity> {
     return this.service.findOne(this.service.filter(id));
@@ -88,7 +88,7 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(updateSwagger(ClientEntity, controllerName))
   @Patch(':id')
   async updateClient(
     @Param('id') id: string,
@@ -107,7 +107,7 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(deleteSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(deleteSwagger(ClientEntity, controllerName))
   @Delete(':id')
   async deleteClient(@Param('id') id: string): Promise<ClientEntity> {
     return this.service.remove(
