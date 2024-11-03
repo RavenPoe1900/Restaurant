@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums, Reservation } from '@prisma/client';
+import { $Enums, Reservation, ReservationStatusEnum } from '@prisma/client';
 import { IsDate, IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 type ReservationWithout = Omit<
@@ -48,14 +48,14 @@ export class ReservationDto implements ReservationWithout {
 
   @ApiProperty({
     description: 'Status Reservation',
-    example: $Enums.ReservationStatusEnum.PENDING,
-    enum: $Enums.ReservationStatusEnum,
+    example: ReservationStatusEnum.PENDING,
+    enum: ReservationStatusEnum,
   })
   @IsNotEmpty()
-  @IsEnum($Enums.ReservationStatusEnum, {
+  @IsEnum(ReservationStatusEnum, {
     message: 'Name must be a valid enum value',
   })
-  status: $Enums.ReservationStatusEnum;
+  status: ReservationStatusEnum;
 }
 
 export class UpdateReservationDto extends PartialType(ReservationDto) {}

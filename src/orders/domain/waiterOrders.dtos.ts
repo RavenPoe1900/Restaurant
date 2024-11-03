@@ -16,6 +16,7 @@ type WaiterOrderWithoutId = Omit<
   | 'ownerId'
   | 'restaurantId'
   | 'status'
+  | 'number'
 >;
 export class WaiterOrderDto implements WaiterOrderWithoutId {
   @ApiProperty({

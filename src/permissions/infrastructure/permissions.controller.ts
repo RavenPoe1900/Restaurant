@@ -42,7 +42,7 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseSwagger(createSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(createSwagger(PermissionEntity, controllerName))
   @Post()
   async createPermission(
     @Body() body: PermissionDto,
@@ -59,7 +59,7 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(findSwagger(PermissionEntity, controllerName))
   @Get()
   async findAll(
     @Query() pagination: PaginationPermissionDto,
@@ -77,7 +77,7 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findOneSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(findOneSwagger(PermissionEntity, controllerName))
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<PermissionEntity> {
     return this.service.findOne(this.service.filter(id));
@@ -91,7 +91,7 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(updateSwagger(PermissionEntity, controllerName))
   @Patch(':id')
   async updatePermission(
     @Param('id') id: string,
@@ -110,7 +110,7 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(deleteSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(deleteSwagger(PermissionEntity, controllerName))
   @Delete(':id')
   async deletePermission(@Param('id') id: string): Promise<PermissionEntity> {
     return this.service.remove(

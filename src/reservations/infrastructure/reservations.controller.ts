@@ -45,7 +45,7 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseSwagger(createSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(createSwagger(ReservationEntity, controllerName))
   @Post()
   async createReservation(
     @Body() body: ReservationDto
@@ -62,7 +62,7 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(findSwagger(ReservationEntity, controllerName))
   @Get()
   async findAll(
     @Query() pagination: PaginationReservationDto
@@ -80,7 +80,7 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findOneSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(findOneSwagger(ReservationEntity, controllerName))
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<ReservationEntity> {
     return this.service.findOne(this.service.filter(id));
@@ -94,7 +94,7 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(updateSwagger(ReservationEntity, controllerName))
   @Patch(':id')
   async updateReservation(
     @Param('id') id: string,
@@ -113,7 +113,7 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(deleteSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(deleteSwagger(ReservationEntity, controllerName))
   @Delete(':id')
   async deleteReservation(@Param('id') id: string): Promise<ReservationEntity> {
     return this.service.remove(
