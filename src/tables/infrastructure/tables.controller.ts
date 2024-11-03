@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -24,6 +25,7 @@ import { TableDto, UpdateTableDto } from '../domain/table.dtos';
 import { PaginationTableDto } from '../domain/pagination-table.dto';
 import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dto';
 import { TableEntity } from '../domain/table.entity';
+import { RequestUser } from 'src/_shared/domain/interface/request-user';
 
 const controllerName = 'Tables';
 @ApiTags('Tables')
@@ -90,14 +92,17 @@ export class TablesController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(updateSwagger(TableDto, controllerName))
   @Patch(':id')
-  async updateTable(
+  updateTable(
     @Param('id') id: string,
-    @Body() updateTableDto: UpdateTableDto
+    @Body() updateTableDto: UpdateTableDto,
+    @Request() req: RequestUser
   ): Promise<TableEntity> {
-    return this.service.update(this.service.filter(id), {
-      data: updateTableDto,
-      where: { id: +id },
-    });
+    return this.service.updateTable(
+      id,
+      updateTableDto,
+      req.user.userId,
+      req.user.restaurantId
+    );
   }
 
   /**

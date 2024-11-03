@@ -70,25 +70,4 @@ export class WaiterOrdersController {
       this.service.waiterFilter(+id, req.user.userId, req.user.restaurantId)
     );
   }
-
-  /**
-   * Updates a order. It allows to update any field contained in the DTO object of the order.
-   * @param id ID of the order to update.
-   * @param UpdateOrderDto Object containing the fields to update.
-   * @returns The updated order or an error.
-   */
-
-  @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(OrderEntity, controllerName))
-  @Patch(':id')
-  async updateOrder(
-    @Param('id') id: string,
-    @Request() req: RequestUser
-  ): Promise<OrderEntity> {
-    return this.service.waiterOreder(
-      +id,
-      req.user.userId,
-      req.user.restaurantId
-    );
-  }
 }

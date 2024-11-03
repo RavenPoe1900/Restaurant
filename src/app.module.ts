@@ -12,6 +12,7 @@ import { ReservationsModule } from './reservations/reservations.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OrdersModule } from './orders/orders.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
+import { TablesModule } from './tables/tables.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
     ClientsModule,
     ReservationsModule,
     OrdersModule,
+    TablesModule,
   ],
   controllers: [],
   providers: [

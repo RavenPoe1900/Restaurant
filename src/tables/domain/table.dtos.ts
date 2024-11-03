@@ -1,8 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums } from '@prisma/client';
-import { IsDate, IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { $Enums, TableStatusEnum } from '@prisma/client';
+import { IsEnum } from 'class-validator';
 import { TableEntity } from './table.entity';
+import { CashierTableDto } from './cashierTable.dtos';
 
 type TableWithoutId = Omit<
   TableEntity,
@@ -16,26 +17,19 @@ type TableWithoutId = Omit<
   | 'deletedBy'
   | 'version'
   | 'ownerId'
-  | 'restarurantId'
+  | 'restaurantId'
+  | 'totalPrice'
 >;
-export class TableDto implements TableWithoutId {
+export class TableDto extends CashierTableDto implements TableWithoutId {
   @ApiProperty({
-    description: 'Table number',
-    example: 5,
-    type: Number,
+    description: 'Status Table',
+    example: TableStatusEnum.CLOSE, // Asegúrate de que esto sea correcto
+    enum: TableStatusEnum,
   })
-  @IsInt({ message: 'Table number must be an integer' })
-  @IsNotEmpty({ message: 'Table number cannot be empty' })
-  number: number;
-
-  @ApiProperty({
-    description: 'ID of the client who owns the table',
-    example: 1,
-    type: Number,
+  @IsEnum(TableStatusEnum, {
+    message: 'Status must be a valid enum value',
   })
-  @IsInt({ message: 'Client ID must be an integer' })
-  @IsNotEmpty({ message: 'Client ID cannot be empty' })
-  clientId: number;
+  status: TableStatusEnum;
 }
 
 export class UpdateTableDto extends PartialType(TableDto) {}

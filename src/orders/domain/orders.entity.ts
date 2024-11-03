@@ -70,4 +70,12 @@ export class OrderEntity extends BaseEntity implements Order {
     type: Number,
   })
   tableId: number;
+
+  @ApiProperty({
+    description: 'The number of the order',
+    required: false,
+    example: 1,
+    type: Number,
+  })
+  number: number;
 }
