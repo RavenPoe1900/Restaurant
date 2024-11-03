@@ -55,19 +55,20 @@ model User {
 }
 
 model Role {
-  id          Int          @id @default(autoincrement())
-  name        String       @unique()
-  description String
-  permissions Permission[]
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-  createdBy   String?      @map("created_by")
-  updatedBy   String?      @map("updated_by")
-  deletedAt   DateTime?    @map("deleted_at")
-  deletedBy   String?      @map("deleted_by")
-  ownerId     Int?         @map("owner_id")
-  version     Int          @default(0)
-  users       User[]
+  id           Int          @id @default(autoincrement())
+  name         String       @unique()
+  description  String
+  permissions  Permission[]
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  createdBy    String?      @map("created_by")
+  updatedBy    String?      @map("updated_by")
+  deletedAt    DateTime?    @map("deleted_at")
+  deletedBy    String?      @map("deleted_by")
+  ownerId      Int?         @map("owner_id")
+  version      Int          @default(0)
+  restaurantId Int?         @map("restaurant_id")
+  users User[]
 }
 
 model Permission {
@@ -168,20 +169,21 @@ model Order {
 }
 
 model OrderItem {
-  id        Int       @id @default(autoincrement())
-  quantity  Int
-  price     Float
-  orderId   Int
-  order     Order     @relation(fields: [orderId], references: [id])
-  date      DateTime
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  createdBy String?   @map("created_by")
-  updatedBy String?   @map("updated_by")
-  deletedAt DateTime? @map("deleted_at")
-  deletedBy String?   @map("deleted_by")
-  version   Int       @default(0)
-  ownerId   Int?      @map("owner_id")
+  id           Int       @id @default(autoincrement())
+  quantity     Int
+  price        Float
+  orderId      Int
+  order        Order     @relation(fields: [orderId], references: [id])
+  date         DateTime
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  createdBy    String?   @map("created_by")
+  updatedBy    String?   @map("updated_by")
+  deletedAt    DateTime? @map("deleted_at")
+  deletedBy    String?   @map("deleted_by")
+  version      Int       @default(0)
+  ownerId      Int?      @map("owner_id")
+  restaurantId Int?      @map("restaurant_id")
 
   @@map("order_items")
 }

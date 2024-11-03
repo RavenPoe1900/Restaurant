@@ -39,7 +39,7 @@ export class OrdersService extends PrismaGenericService<
       },
       where: { orderId: orderId },
     });
-    return this.update(this.filter(orderId + ''), {
+    return this.update(this.filter(orderId + '', restaurantId), {
       data: { status: $Enums.OrdenStatusEnum.CLOSE },
       where: this.waiterFilter(orderId, userId, restaurantId).where,
     });

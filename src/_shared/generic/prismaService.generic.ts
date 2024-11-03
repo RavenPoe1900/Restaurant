@@ -7,8 +7,8 @@ export class PrismaGenericService<T, C, R, U, D, F> {
                               processing the request`;
   badRequestException = 'The id does not exist';
   model;
-  filter = (id: string) => {
-    return { where: { id: +id } };
+  filter = (id: string, restaurantId) => {
+    return { where: { id: +id, restaurantId: restaurantId } };
   };
 
   constructor(model) {
@@ -81,7 +81,7 @@ export class PrismaGenericService<T, C, R, U, D, F> {
   }
 
   managerError(exception) {
-    console.log("exception");
+    console.log('exception');
     console.log(exception);
     let status = 500;
     let message = 'An unexpected error occurred';
@@ -127,7 +127,7 @@ export class PrismaGenericService<T, C, R, U, D, F> {
         message,
         // timestamp: new Date().toISOString(),
       },
-      status,
+      status
     );
   }
 }

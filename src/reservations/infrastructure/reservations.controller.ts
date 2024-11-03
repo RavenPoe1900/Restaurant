@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -28,6 +29,7 @@ import {
 } from '../domain/reservation.dtos';
 import { ReservationEntity } from '../domain/reservation.entity';
 import { PaginationReservationDto } from '../domain/pagination-reservation.dto';
+import { RequestUser } from 'src/_shared/domain/interface/request-user';
 
 const controllerName = 'Reservations';
 @ApiTags('Reservations')
@@ -82,8 +84,11 @@ export class ReservationsController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findOneSwagger(ReservationEntity, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ReservationEntity> {
-    return this.service.findOne(this.service.filter(id));
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<ReservationEntity> {
+    return this.service.findOne(this.service.filter(id, req.user.restaurantId));
   }
 
   /**
@@ -98,9 +103,10 @@ export class ReservationsController {
   @Patch(':id')
   async updateReservation(
     @Param('id') id: string,
-    @Body() updateReservationDto: UpdateReservationDto
+    @Body() updateReservationDto: UpdateReservationDto,
+    @Request() req: RequestUser
   ): Promise<ReservationEntity> {
-    return this.service.update(this.service.filter(id), {
+    return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateReservationDto,
       where: { id: +id },
     });
@@ -115,10 +121,13 @@ export class ReservationsController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(deleteSwagger(ReservationEntity, controllerName))
   @Delete(':id')
-  async deleteReservation(@Param('id') id: string): Promise<ReservationEntity> {
+  async deleteReservation(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<ReservationEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

@@ -45,7 +45,7 @@ export class RolesController {
   @HttpCode(HttpStatus.CREATED)
   @ApiResponseSwagger(createSwagger(RoleEntity, controllerName))
   @Post()
-  async createRole(
+  createRole(
     @Body() body: RoleDto,
     @Request() req: RequestUser
   ): Promise<RoleEntity> {
@@ -63,7 +63,7 @@ export class RolesController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findSwagger(RoleEntity, controllerName))
   @Get()
-  async findAll(
+  findAll(
     @Query() pagination: PaginationRoleDto
   ): Promise<PaginatedResponse<RoleEntity>> {
     return this.service.findAll({
@@ -81,8 +81,11 @@ export class RolesController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findOneSwagger(RoleEntity, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<RoleEntity> {
-    return this.service.findOne(this.service.filter(id));
+  findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<RoleEntity> {
+    return this.service.findOne(this.service.filter(id, req.user.restaurantId));
   }
 
   /**
@@ -95,7 +98,7 @@ export class RolesController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(updateSwagger(RoleEntity, controllerName))
   @Patch(':id')
-  async updateRole(
+  updateRole(
     @Param('id') id: string,
     @Body() updateRoleDto: UpdateRoleDto,
     @Request() req: RequestUser
@@ -112,10 +115,13 @@ export class RolesController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(deleteSwagger(RoleEntity, controllerName))
   @Delete(':id')
-  async deleteRole(@Param('id') id: string): Promise<RoleEntity> {
+  deleteRole(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<RoleEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

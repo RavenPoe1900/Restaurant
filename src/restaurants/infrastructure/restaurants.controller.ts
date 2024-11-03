@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -24,6 +25,7 @@ import { RestaurantDto, UpdateRestaurantDto } from '../domain/restaurants.dtos';
 import { PaginationRestaurantDto } from '../domain/pagination-restaurants.dto';
 import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dto';
 import { RestaurantEntity } from '../domain/restaurants.entity';
+import { RequestUser } from 'src/_shared/domain/interface/request-user';
 
 const controllerName = 'Restaurants';
 @ApiTags('Restaurants')
@@ -78,8 +80,11 @@ export class RestaurantsController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findOneSwagger(RestaurantDto, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<RestaurantEntity> {
-    return this.service.findOne(this.service.filter(id));
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<RestaurantEntity> {
+    return this.service.findOne(this.service.filter(id, req.user.restaurantId));
   }
 
   /**
@@ -94,9 +99,10 @@ export class RestaurantsController {
   @Patch(':id')
   async updateRestaurant(
     @Param('id') id: string,
-    @Body() updateRestaurantDto: UpdateRestaurantDto
+    @Body() updateRestaurantDto: UpdateRestaurantDto,
+    @Request() req: RequestUser
   ): Promise<RestaurantEntity> {
-    return this.service.update(this.service.filter(id), {
+    return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateRestaurantDto,
       where: { id: +id },
     });
@@ -111,10 +117,13 @@ export class RestaurantsController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(deleteSwagger(RestaurantDto, controllerName))
   @Delete(':id')
-  async deleteRestaurant(@Param('id') id: string): Promise<RestaurantEntity> {
+  async deleteRestaurant(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<RestaurantEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

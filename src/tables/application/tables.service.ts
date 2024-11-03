@@ -44,20 +44,26 @@ export class TablesService extends PrismaGenericService<
     userId: number,
     restaurantId: number
   ): Promise<TableEntity> {
-    const totalPrice = await this.orderPayment(tableId, userId);
-    return this.update(this.filter(tableId + ''), {
+    const totalPrice = await this.orderPayment(tableId, userId, restaurantId);
+    return this.update(this.filter(tableId + '', restaurantId), {
       data: { status: $Enums.OrdenStatusEnum.CLOSE, totalPrice: totalPrice },
       where: this.cashierFilter(tableId, userId, restaurantId).where,
     });
   }
 
-  async orderPayment(tableId: number, userId: number): Promise<number> {
+  async orderPayment(
+    tableId: number,
+    userId: number,
+    restaurantId: number
+  ): Promise<number> {
     const orderTotalPrices: TotalPricesByOrder[] = await this.orderTotalPrices(
       tableId,
       userId
     );
-    const totalPrice: number =
-      await this.updateOrderAndTotalPrice(orderTotalPrices);
+    const totalPrice: number = await this.updateOrderAndTotalPrice(
+      orderTotalPrices,
+      restaurantId
+    );
     return totalPrice;
   }
 
@@ -83,7 +89,8 @@ export class TablesService extends PrismaGenericService<
   }
 
   async updateOrderAndTotalPrice(
-    orderTotalPrices: TotalPricesByOrder[]
+    orderTotalPrices: TotalPricesByOrder[],
+    restaurantId: number
   ): Promise<number> {
     let totalPrice = 0;
 
@@ -115,7 +122,7 @@ export class TablesService extends PrismaGenericService<
 
     const updatePromises = updates.map((update) =>
       this.ordersService.update(
-        this.ordersService.filter(update.where.id + ''),
+        this.ordersService.filter(update.where.id + '', restaurantId),
         update
       )
     );
@@ -140,8 +147,8 @@ export class TablesService extends PrismaGenericService<
       updateTableDto.status &&
       !(updateTableDto.status === $Enums.TableStatusEnum.OPEN)
     )
-      totalPrice = await this.orderPayment(+tableId, userId);
-    return this.update(this.filter(tableId), {
+      totalPrice = await this.orderPayment(+tableId, userId, restaurantId);
+    return this.update(this.filter(tableId, restaurantId), {
       data: { ...updateTableDto, totalPrice: totalPrice },
       where: { id: +tableId, restaurantId: restaurantId },
     });

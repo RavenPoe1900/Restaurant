@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -24,6 +25,7 @@ import { OrderItemDto, UpdateOrderItemDto } from '../domain/orderItem.dtos';
 import { PaginationOrderItemDto } from '../domain/pagination-orderItem.dto';
 import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dto';
 import { OrderItemEntity } from '../domain/orderItem.entity';
+import { RequestUser } from 'src/_shared/domain/interface/request-user';
 
 const controllerName = 'OrderItems';
 @ApiTags('OrderItems')
@@ -76,8 +78,11 @@ export class OrderItemsController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findOneSwagger(OrderItemDto, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<OrderItemEntity> {
-    return this.service.findOne(this.service.filter(id));
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<OrderItemEntity> {
+    return this.service.findOne(this.service.filter(id, req.user.restaurantId));
   }
 
   /**
@@ -92,9 +97,10 @@ export class OrderItemsController {
   @Patch(':id')
   async updateOrderItem(
     @Param('id') id: string,
-    @Body() updateOrderItemDto: UpdateOrderItemDto
+    @Body() updateOrderItemDto: UpdateOrderItemDto,
+    @Request() req: RequestUser
   ): Promise<OrderItemEntity> {
-    return this.service.update(this.service.filter(id), {
+    return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateOrderItemDto,
       where: { id: +id },
     });
@@ -109,10 +115,13 @@ export class OrderItemsController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(deleteSwagger(OrderItemDto, controllerName))
   @Delete(':id')
-  async deleteOrderItem(@Param('id') id: string): Promise<OrderItemEntity> {
+  async deleteOrderItem(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<OrderItemEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }
