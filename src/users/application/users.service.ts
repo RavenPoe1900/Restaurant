@@ -29,7 +29,11 @@ export class UsersService
 
   async onModuleInit() {
     const hashedPassword = await hashPassword(process.env.PASSWORD);
-
+    const restaurant = await this.prismaService.restaurant.findUnique({
+      where: {
+        licenseType: process.env.RESTAURANT_LICENSE_TYPE,
+      },
+    });
     const user = await this.model.upsert({
       where: { email: process.env.EMAIL },
       update: {},
@@ -39,6 +43,7 @@ export class UsersService
         firstName: process.env.FIRST_NAME,
         lastName: process.env.LAST_NAME,
         role: { connect: { name: 'admin' } },
+        restaurantId: restaurant.id,
       },
     });
 
