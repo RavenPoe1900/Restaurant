@@ -1,16 +1,20 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { Client } from '@prisma/client';
 import {
   IsEmail,
+  IsEnum,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsPositive,
   IsString,
+  Min,
 } from 'class-validator';
+import { ClientEntity } from './client.entity';
+import { ClientStatusEnum } from '@prisma/client';
 
 type ClientWithout = Omit<
-  Client,
+  ClientEntity,
   | 'id'
   | 'createdAt'
   | 'updatedAt'
@@ -22,6 +26,7 @@ type ClientWithout = Omit<
   | 'version'
   | 'ownerId'
   | 'restaurantId'
+  | 'status'
 >;
 export class ClientDto implements ClientWithout {
   @ApiProperty({
@@ -47,10 +52,33 @@ export class ClientDto implements ClientWithout {
     example: 30,
     type: Number,
   })
-  @IsInt() 
-  @IsPositive() 
-  @IsNotEmpty() 
+  @IsInt()
+  @IsPositive()
+  @IsNotEmpty()
+  @Min(16)
   age: number;
+
+  @ApiProperty({
+    description: 'The number of people who come with the client',
+    example: 1,
+    type: Number,
+  })
+  @IsInt()
+  @IsPositive()
+  @IsOptional()
+  @Min(1)
+  numberOfPeople: number;
 }
 
-export class UpdateClientDto extends PartialType(ClientDto) {}
+export class UpdateClientDto extends PartialType(ClientDto) {
+  @ApiProperty({
+    description: 'Status Reservation',
+    example: ClientStatusEnum.HE_WENT_AWAY,
+    enum: ClientStatusEnum,
+  })
+  @IsOptional()
+  @IsEnum(ClientStatusEnum, {
+    message: 'Name must be a valid enum value',
+  })
+  status: ClientStatusEnum;
+}

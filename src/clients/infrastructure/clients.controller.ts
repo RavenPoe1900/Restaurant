@@ -49,14 +49,11 @@ export class ClientsController {
     @Body() body: ClientDto,
     @Request() req: RequestUser
   ): Promise<ClientEntity> {
-    return await this.service.create({
-      data: {
-        ...body,
-        ownerId: req.user.userId,
-        restaurantId: req.user.restaurantId,
-      },
-      select: this.service.clientSelect,
-    });
+    return this.service.createClients(
+      body,
+      req.user.userId,
+      req.user.restaurantId
+    );
   }
 
   /**
@@ -118,11 +115,11 @@ export class ClientsController {
     @Body() updateClientDto: UpdateClientDto,
     @Request() req: RequestUser
   ): Promise<ClientEntity> {
-    return this.service.update(this.service.filter(id, req.user.restaurantId), {
-      data: updateClientDto,
-      where: { id: +id, restaurantId: req.user.restaurantId },
-      select: this.service.clientSelect,
-    });
+    return this.service.updateClients(
+      id,
+      updateClientDto,
+      req.user.restaurantId
+    );
   }
 
   /**

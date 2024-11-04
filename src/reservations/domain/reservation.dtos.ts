@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums, Reservation, ReservationStatusEnum } from '@prisma/client';
+import { Reservation, ReservationStatusEnum } from '@prisma/client';
 import { IsDate, IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { TransformStringToDate } from 'src/_shared/transform/stringToDate.transform';
 

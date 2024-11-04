@@ -32,6 +32,13 @@ export class RestaurantEntity extends BaseEntity implements Restaurant {
   name: string;
 
   @ApiProperty({
+    description: 'The current capacity of the restaurant',
+    example: 1,
+    type: Number,
+  })
+  currentCapacity: number;
+
+  @ApiProperty({
     description: 'License type of the restaurant',
     uniqueItems: true,
     example: 'Food Service License',
