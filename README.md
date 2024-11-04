@@ -55,8 +55,7 @@ $ npx prisma db seed
 $ npm run start:prod
 ```
 
-````
-
+```bash
 # Restaurant Management System
 
 ## Objective
@@ -185,7 +184,10 @@ The following environment variables are required for the proper configuration of
 - **EXPIRESIN**:
   - **Description**: The duration for which tokens are valid (expiration time).
   - **Example**: `"240h"` (240 hours)
+  
+```
 
+```bash
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
