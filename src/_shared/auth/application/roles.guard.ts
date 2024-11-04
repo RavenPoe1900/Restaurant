@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Prisma } from '@prisma/client';
 import { RolesService } from 'src/roles/application/roles.service';
-import { IS_PUBLIC_KEY } from '../insfractuture/public.decorator';
+import { IS_PUBLIC_KEY } from '../domain/public.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -17,7 +17,6 @@ export class RolesGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),

@@ -24,4 +24,12 @@ export class RoleEntity extends BaseEntity implements Role {
     description: 'The version number of the owner data',
   })
   ownerId: number;
+
+  @ApiProperty({
+    example: 1,
+    description:
+      'The unique identifier of the restaurant associated with the user',
+    type: Number,
+  })
+  restaurantId: number;
 }

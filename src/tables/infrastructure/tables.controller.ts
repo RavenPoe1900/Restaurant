@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -24,6 +25,7 @@ import { TableDto, UpdateTableDto } from '../domain/table.dtos';
 import { PaginationTableDto } from '../domain/pagination-table.dto';
 import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dto';
 import { TableEntity } from '../domain/table.entity';
+import { RequestUser } from 'src/_shared/domain/interface/request-user';
 
 const controllerName = 'Tables';
 @ApiTags('Tables')
@@ -41,10 +43,20 @@ export class TablesController {
    */
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseSwagger(createSwagger(TableDto, controllerName))
+  @ApiResponseSwagger(createSwagger(TableEntity, controllerName))
   @Post()
-  async createTable(@Body() body: TableDto): Promise<TableEntity> {
-    return await this.service.create({ data: body });
+  async createTable(
+    @Body() body: TableDto,
+    @Request() req: RequestUser
+  ): Promise<TableEntity> {
+    return await this.service.create({
+      data: {
+        ...body,
+        restaurantId: req.user.restaurantId,
+        ownerId: req.user.userId,
+      },
+      select: this.service.tableSelect,
+    });
   }
 
   /**
@@ -56,14 +68,19 @@ export class TablesController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findSwagger(TableDto, controllerName))
+  @ApiResponseSwagger(findSwagger(TableEntity, controllerName))
   @Get()
   async findAll(
-    @Query() pagination: PaginationTableDto
+    @Query() pagination: PaginationTableDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<TableEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
+      select: this.service.tableSelect,
     });
   }
 
@@ -74,10 +91,16 @@ export class TablesController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findOneSwagger(TableDto, controllerName))
+  @ApiResponseSwagger(findOneSwagger(TableEntity, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<TableEntity> {
-    return this.service.findOne(this.service.filter(id));
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<TableEntity> {
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.tableSelect,
+    });
   }
 
   /**
@@ -88,16 +111,19 @@ export class TablesController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(TableDto, controllerName))
+  @ApiResponseSwagger(updateSwagger(TableEntity, controllerName))
   @Patch(':id')
-  async updateTable(
+  updateTable(
     @Param('id') id: string,
-    @Body() updateTableDto: UpdateTableDto
+    @Body() updateTableDto: UpdateTableDto,
+    @Request() req: RequestUser
   ): Promise<TableEntity> {
-    return this.service.update(this.service.filter(id), {
-      data: updateTableDto,
-      where: { id: +id },
-    });
+    return this.service.updateTable(
+      id,
+      updateTableDto,
+      req.user.userId,
+      req.user.restaurantId
+    );
   }
 
   /**
@@ -107,12 +133,15 @@ export class TablesController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(deleteSwagger(TableDto, controllerName))
+  @ApiResponseSwagger(deleteSwagger(TableEntity, controllerName))
   @Delete(':id')
-  async deleteTable(@Param('id') id: string): Promise<TableEntity> {
+  async deleteTable(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<TableEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

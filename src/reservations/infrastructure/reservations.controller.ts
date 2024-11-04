@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -28,11 +29,12 @@ import {
 } from '../domain/reservation.dtos';
 import { ReservationEntity } from '../domain/reservation.entity';
 import { PaginationReservationDto } from '../domain/pagination-reservation.dto';
+import { RequestUser } from 'src/_shared/domain/interface/request-user';
 
 const controllerName = 'Reservations';
 @ApiTags('Reservations')
 @Controller({
-  path: 'restaurants',
+  path: 'reservations',
   version: '1',
 })
 export class ReservationsController {
@@ -45,12 +47,20 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseSwagger(createSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(createSwagger(ReservationEntity, controllerName))
   @Post()
   async createReservation(
-    @Body() body: ReservationDto
+    @Body() body: ReservationDto,
+    @Request() req: RequestUser
   ): Promise<ReservationEntity> {
-    return await this.service.create({ data: body });
+    return await this.service.create({
+      data: {
+        ...body,
+        ownerId: req.user.userId,
+        restaurantId: req.user.restaurantId,
+      },
+      select: this.service.reservationSelect,
+    });
   }
 
   /**
@@ -62,14 +72,19 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(findSwagger(ReservationEntity, controllerName))
   @Get()
   async findAll(
-    @Query() pagination: PaginationReservationDto
+    @Query() pagination: PaginationReservationDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<ReservationEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      select: this.service.reservationSelect,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
     });
   }
 
@@ -80,10 +95,16 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findOneSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(findOneSwagger(ReservationEntity, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ReservationEntity> {
-    return this.service.findOne(this.service.filter(id));
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<ReservationEntity> {
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.reservationSelect,
+    });
   }
 
   /**
@@ -94,15 +115,17 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(updateSwagger(ReservationEntity, controllerName))
   @Patch(':id')
   async updateReservation(
     @Param('id') id: string,
-    @Body() updateReservationDto: UpdateReservationDto
+    @Body() updateReservationDto: UpdateReservationDto,
+    @Request() req: RequestUser
   ): Promise<ReservationEntity> {
-    return this.service.update(this.service.filter(id), {
+    return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateReservationDto,
-      where: { id: +id },
+      where: { id: +id, restaurantId: req.user.restaurantId },
+      select: this.service.reservationSelect,
     });
   }
 
@@ -113,12 +136,15 @@ export class ReservationsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(deleteSwagger(ReservationDto, controllerName))
+  @ApiResponseSwagger(deleteSwagger(ReservationEntity, controllerName))
   @Delete(':id')
-  async deleteReservation(@Param('id') id: string): Promise<ReservationEntity> {
+  async deleteReservation(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<ReservationEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

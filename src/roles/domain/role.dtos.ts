@@ -22,6 +22,7 @@ type RoleWithout = Omit<
   | 'deletedBy'
   | 'version'
   | 'ownerId'
+  | 'restaurantId'
 >;
 
 export class RoleDto implements RoleWithout {

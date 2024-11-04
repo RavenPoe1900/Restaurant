@@ -1,16 +1,14 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums } from '@prisma/client';
 import {
   IsDate,
-  IsEnum,
   IsInt,
   IsNotEmpty,
   IsNumber,
   IsPositive,
-  IsString,
 } from 'class-validator';
 import { OrderItemEntity } from './orderItem.entity';
+import { TransformStringToDate } from 'src/_shared/transform/stringToDate.transform';
 
 type OrderItemWithoutId = Omit<
   OrderItemEntity,
@@ -26,7 +24,7 @@ type OrderItemWithoutId = Omit<
   | 'ownerId'
   | 'restaurantId'
 >;
-export class OrderItemDto implements OrderItemWithoutId {
+export class OrderItemDto  implements OrderItemWithoutId {
   @ApiProperty({
     description: 'Quantity of the product in the order item',
     example: 2,
@@ -61,8 +59,9 @@ export class OrderItemDto implements OrderItemWithoutId {
     example: '2024-01-01T00:00:00Z',
     type: String,
   })
-  @IsDate()
+  @TransformStringToDate()
   @IsNotEmpty()
+  @IsDate()
   date: Date;
 }
 

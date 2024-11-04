@@ -21,7 +21,33 @@ export class RolesService
   constructor(private readonly prismaService: PrismaService) {
     super(prismaService.role);
   }
+  roleSelect: Prisma.RoleSelect = {
+    id: true,
+    name: true,
+    description: true,
+    permissions: {
+      select: {
+        path: true,
+        method: true,
+      },
+    },
+    createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
+    deletedAt: true,
+    deletedBy: true,
+    ownerId: true,
+    version: true,
+    restaurantId: true,
+  };
+
   async onModuleInit() {
+    const restaurant = await this.prismaService.restaurant.findUnique({
+      where: {
+        licenseType: process.env.RESTAURANT_LICENSE_TYPE,
+      },
+    });
     const roles = [
       { name: 'admin', description: 'Administrator role with full access' },
       { name: 'user', description: 'Regular user role with limited access' },
@@ -34,6 +60,7 @@ export class RolesService
         create: {
           name: role.name,
           description: role.description,
+          restaurantId: restaurant.id,
         },
       });
     }
@@ -53,6 +80,7 @@ export class RolesService
         permissions: permissionCreateNested,
         ownerId: userId,
       },
+      select: this.roleSelect,
     };
     return await this.create(serviceCreateArgs);
   }
@@ -60,7 +88,7 @@ export class RolesService
   async updateService(
     id: string,
     updateServiceDto: UpdateRoleDto,
-    userID: number
+    restaurantId: number
   ) {
     const { permissionsToRemove, permissionsToAdd, ...data } = updateServiceDto;
     const roleUpdateInput: Prisma.RoleUpdateInput = {
@@ -74,9 +102,10 @@ export class RolesService
           : undefined,
       },
     };
-    return this.update(this.filter(id), {
+    return this.update(this.filter(id, restaurantId), {
       data: roleUpdateInput,
-      where: { id: +id },
+      where: { id: +id, restaurantId: restaurantId },
+      select: this.roleSelect,
     });
   }
 }

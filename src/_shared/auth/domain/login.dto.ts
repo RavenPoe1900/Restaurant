@@ -5,6 +5,7 @@ import {
   MaxLength,
   IsNotEmpty,
   IsEmail,
+  IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -44,5 +45,6 @@ export class LoginDto {
     example: 1,
     type: Number,
   })
+  @IsNumber()
   restaurantId: number;
 }

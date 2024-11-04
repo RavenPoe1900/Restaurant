@@ -27,9 +27,37 @@ export class UsersService
     super(prismaService.user);
   }
 
+  userSelect: Prisma.UserSelect = {
+    id: true,
+    email: true,
+    phone: true,
+    firstName: true,
+    lastName: true,
+    isActive: true,
+    photo: true,
+    createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
+    deletedAt: true,
+    deletedBy: true,
+    version: true,
+    ownerId: true,
+    restaurantId: true,
+    role: {
+      select: {
+        name: true,
+      },
+    },
+  };
+
   async onModuleInit() {
     const hashedPassword = await hashPassword(process.env.PASSWORD);
-
+    const restaurant = await this.prismaService.restaurant.findUnique({
+      where: {
+        licenseType: process.env.RESTAURANT_LICENSE_TYPE,
+      },
+    });
     const user = await this.model.upsert({
       where: { email: process.env.EMAIL },
       update: {},
@@ -39,6 +67,7 @@ export class UsersService
         firstName: process.env.FIRST_NAME,
         lastName: process.env.LAST_NAME,
         role: { connect: { name: 'admin' } },
+        restaurantId: restaurant.id,
       },
     });
 
@@ -61,6 +90,7 @@ export class UsersService
         ownerId: userId,
         restaurantId: restaurantId,
       },
+      select: this.userSelect,
     });
   }
 }

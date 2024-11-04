@@ -14,21 +14,24 @@ datasource db {
 }
 
 model Restaurant {
-  id          Int       @id @default(autoincrement())
-  user        User[]
-  rating      Int       @default(0)
-  phone       String
-  name        String?   @unique
-  licenseType String    @unique
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  createdBy   String?   @map("created_by")
-  updatedBy   String?   @map("updated_by")
-  deletedAt   DateTime? @map("deleted_at")
-  deletedBy   String?   @map("deleted_by")
-  version     Int       @default(0)
-  ownerId     Int?      @map("owner_id")
-  clients     Client[]
+  id              Int       @id @default(autoincrement())
+  users           User[]
+  rating          Int       @default(0)
+  phone           String
+  name            String
+  address         String    @unique()
+  capacity        Int
+  currentCapacity Int?      @default(0)
+  licenseType     String    @unique
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  createdBy       String?   @map("created_by")
+  updatedBy       String?   @map("updated_by")
+  deletedAt       DateTime? @map("deleted_at")
+  deletedBy       String?   @map("deleted_by")
+  version         Int       @default(0)
+  ownerId         Int?      @map("owner_id")
+  clients         Client[]
 }
 
 model User {
@@ -55,19 +58,20 @@ model User {
 }
 
 model Role {
-  id          Int          @id @default(autoincrement())
-  name        String       @unique()
-  description String
-  permissions Permission[]
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-  createdBy   String?      @map("created_by")
-  updatedBy   String?      @map("updated_by")
-  deletedAt   DateTime?    @map("deleted_at")
-  deletedBy   String?      @map("deleted_by")
-  ownerId     Int?         @map("owner_id")
-  version     Int          @default(0)
-  users       User[]
+  id           Int          @id @default(autoincrement())
+  name         String       @unique()
+  description  String
+  permissions  Permission[]
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  createdBy    String?      @map("created_by")
+  updatedBy    String?      @map("updated_by")
+  deletedAt    DateTime?    @map("deleted_at")
+  deletedBy    String?      @map("deleted_by")
+  ownerId      Int?         @map("owner_id")
+  version      Int          @default(0)
+  restaurantId Int?         @map("restaurant_id")
+  users        User[]
 }
 
 model Permission {
@@ -89,21 +93,24 @@ model Permission {
 }
 
 model Client {
-  id           Int           @id @default(autoincrement())
-  name         String
-  email        String        @unique
-  restaurant   Restaurant?   @relation(fields: [restaurantId], references: [id])
-  restaurantId Int?          @map("role_id")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  createdBy    String?       @map("created_by")
-  updatedBy    String?       @map("updated_by")
-  deletedAt    DateTime?     @map("deleted_at")
-  deletedBy    String?       @map("deleted_by")
-  version      Int           @default(0)
-  ownerId      Int?          @map("owner_id")
-  reservations Reservation[]
-  table        Table[]
+  id             Int              @id @default(autoincrement())
+  name           String
+  age            Int
+  email          String           @unique
+  status         ClientStatusEnum @default(IN_PLACE)
+  numberOfPeople Int?             @default(1) @map("number_of_people")
+  restaurant     Restaurant?      @relation(fields: [restaurantId], references: [id])
+  restaurantId   Int?             @map("restaurant_id")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  createdBy      String?          @map("created_by")
+  updatedBy      String?          @map("updated_by")
+  deletedAt      DateTime?        @map("deleted_at")
+  deletedBy      String?          @map("deleted_by")
+  version        Int              @default(0)
+  ownerId        Int              @map("owner_id")
+  reservations   Reservation[]
+  tables         Table[]
 }
 
 model Reservation {
@@ -125,25 +132,27 @@ model Reservation {
 }
 
 model Table {
-  id           Int       @id @default(autoincrement())
+  id           Int             @id @default(autoincrement())
   number       Int
-  clientId     Int       @map("client_id")
-  client       Client    @relation(fields: [clientId], references: [id])
+  status       TableStatusEnum
+  totalPrice   Float?          @map("total_price")
+  clientId     Int             @map("client_id")
+  client       Client          @relation(fields: [clientId], references: [id])
   orders       Order[]
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
-  createdBy    String?   @map("created_by")
-  updatedBy    String?   @map("updated_by")
-  deletedAt    DateTime? @map("deleted_at")
-  deletedBy    String?   @map("deleted_by")
-  version      Int       @default(0)
-  ownerId      Int?      @map("owner_id")
-  restaurantId Int?      @map("restaurant_id")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+  createdBy    String?         @map("created_by")
+  updatedBy    String?         @map("updated_by")
+  deletedAt    DateTime?       @map("deleted_at")
+  deletedBy    String?         @map("deleted_by")
+  version      Int             @default(0)
+  ownerId      Int?            @map("owner_id")
+  restaurantId Int?            @map("restaurant_id")
 }
 
 model Order {
   id           Int             @id @default(autoincrement())
-  totalPrice   Float           @map("total_price")
+  totalPrice   Float?          @map("total_price")
   date         DateTime
   status       OrdenStatusEnum
   createdAt    DateTime        @default(now()) @map("created_at")
@@ -161,22 +170,42 @@ model Order {
 }
 
 model OrderItem {
-  id        Int       @id @default(autoincrement())
-  quantity  Int
-  price     Float
-  orderId   Int
-  order     Order     @relation(fields: [orderId], references: [id])
-  date      DateTime
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  createdBy String?   @map("created_by")
-  updatedBy String?   @map("updated_by")
-  deletedAt DateTime? @map("deleted_at")
-  deletedBy String?   @map("deleted_by")
-  version   Int       @default(0)
-  ownerId   Int?      @map("owner_id")
+  id           Int       @id @default(autoincrement())
+  quantity     Int
+  price        Float
+  order        Order?    @relation(fields: [orderId], references: [id])
+  orderId      Int?      @map("order_id")
+  date         DateTime
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  createdBy    String?   @map("created_by")
+  updatedBy    String?   @map("updated_by")
+  deletedAt    DateTime? @map("deleted_at")
+  deletedBy    String?   @map("deleted_by")
+  version      Int       @default(0)
+  ownerId      Int?      @map("owner_id")
+  restaurantId Int?      @map("restaurant_id")
+  items        Item[]
 
   @@map("order_items")
+}
+
+model Item {
+  id           Int       @id @default(autoincrement())
+  name         String    @map("item_name")
+  description  String?   @map("item_description")
+  price        Float
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  createdBy    String?   @map("created_by")
+  updatedBy    String?   @map("updated_by")
+  deletedAt    DateTime? @map("deleted_at")
+  deletedBy    String?   @map("deleted_by")
+  version      Int       @default(0)
+  restaurantId Int?      @map("restaurant_id")
+  ownerId      Int?      @map("owner_id")
+  orderItem    OrderItem @relation(fields: [orderItemId], references: [id])
+  orderItemId  Int       @map("order_item")
 }
 
 enum ReservationStatusEnum {
@@ -191,4 +220,16 @@ enum OrdenStatusEnum {
   CLOSE
   COMPLIMENTARY_BILLL
   HOUSE_ACCOUNT
+}
+
+enum TableStatusEnum {
+  OPEN
+  CLOSE
+  COMPLIMENTARY_BILLL
+  HOUSE_ACCOUNT
+}
+
+enum ClientStatusEnum {
+  IN_PLACE
+  HE_WENT_AWAY
 }

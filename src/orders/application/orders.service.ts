@@ -18,6 +18,40 @@ export class OrdersService extends PrismaGenericService<
     super(prismaService.order);
   }
 
+  orderSelect: Prisma.OrderSelect = {
+    id: true,
+    totalPrice: true,
+    date: true,
+    status: true,
+    createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
+    deletedAt: true,
+    deletedBy: true,
+    version: true,
+    ownerId: true,
+    restaurantId: true,
+    tableId: true,
+    table: {
+      select: {
+        client: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    },
+    items: {
+      select: {
+        quantity: true,
+        price: true,
+      },
+    },
+  };
+
   waiterFilter(orderId: number, userId: number, restaurantId: number) {
     return {
       where: {
@@ -39,7 +73,7 @@ export class OrdersService extends PrismaGenericService<
       },
       where: { orderId: orderId },
     });
-    return this.update(this.filter(orderId + ''), {
+    return this.update(this.filter(orderId + '', restaurantId), {
       data: { status: $Enums.OrdenStatusEnum.CLOSE },
       where: this.waiterFilter(orderId, userId, restaurantId).where,
     });

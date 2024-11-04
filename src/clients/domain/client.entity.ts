@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Client } from '@prisma/client';
+import { Client, ClientStatusEnum } from '@prisma/client';
 
 export class ClientEntity implements Client {
   @ApiProperty({
@@ -22,6 +22,27 @@ export class ClientEntity implements Client {
     type: String,
   })
   email: string;
+
+  @ApiProperty({
+    description: 'The age of the user',
+    example: 30,
+    type: Number,
+  })
+  age: number;
+
+  @ApiProperty({
+    description: 'The number of people who come with the client',
+    example: 1,
+    type: Number,
+  })
+  numberOfPeople: number;
+
+  @ApiProperty({
+    description: 'Status Reservation',
+    example: ClientStatusEnum.HE_WENT_AWAY,
+    enum: ClientStatusEnum,
+  })
+  status: ClientStatusEnum;
 
   @ApiProperty({
     description: 'The ID of the restaurant the client is associated with',

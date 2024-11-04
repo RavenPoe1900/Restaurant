@@ -11,26 +11,11 @@ export class OrderEntity extends BaseEntity implements Order {
   id: number;
 
   @ApiProperty({
-    description: 'The ID of the client placing the order',
-    example: 1,
-    type: Number,
-  })
-  clientId: number;
-
-  @ApiProperty({
     description: 'Status Order',
     example: $Enums.OrdenStatusEnum.CLOSE,
     enum: $Enums.OrdenStatusEnum,
   })
   status: $Enums.OrdenStatusEnum;
-
-  @ApiProperty({
-    description:
-      'The total amount of the order in the currency of the restaurant',
-    example: 29.99,
-    type: Number,
-  })
-  total: number;
 
   @ApiProperty({
     description: 'Price of the product in the order item',
@@ -70,4 +55,12 @@ export class OrderEntity extends BaseEntity implements Order {
     type: Number,
   })
   tableId: number;
+
+  @ApiProperty({
+    description: 'The number of the order',
+    required: false,
+    example: 1,
+    type: Number,
+  })
+  number: number;
 }

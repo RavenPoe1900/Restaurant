@@ -17,4 +17,26 @@ export class OrderItemsService extends PrismaGenericService<
   constructor(private readonly prismaService: PrismaService) {
     super(prismaService.orderItem);
   }
+  orderItemSelect: Prisma.OrderItemSelect = {
+    id: true,
+    quantity: true,
+    price: true,
+    order: {
+      select: {
+        totalPrice: true,
+        status: true,
+        date: true,
+      },
+    },
+    date: true,
+    createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
+    deletedAt: true,
+    deletedBy: true,
+    version: true,
+    ownerId: true,
+    restaurantId: true,
+  };
 }

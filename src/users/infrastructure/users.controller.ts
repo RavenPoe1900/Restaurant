@@ -45,11 +45,11 @@ export class UsersController {
   @HttpCode(HttpStatus.CREATED)
   @ApiResponseSwagger(createSwagger(UserEntity, controllerName))
   @Post()
-  async createUser(
+  createUser(
     @Body() body: UserDto,
     @Request() req: RequestUser
   ): Promise<UserEntity> {
-    return await this.service.createUser(
+    return this.service.createUser(
       body,
       req.user.userId,
       req.user.restaurantId
@@ -67,13 +67,15 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findSwagger(UserEntity, controllerName))
   @Get()
-  async findAll(
+  findAll(
     @Query() pagination: PaginationUserDto,
     @Request() req: RequestUser
   ): Promise<PaginatedResponse<UserEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      where: { restaurantId: req.user.restaurantId },
+      select: this.service.userSelect,
     });
   }
 
@@ -86,12 +88,13 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findOneSwagger(UserEntity, controllerName))
   @Get(':id')
-  async findOne(
+  findOne(
     @Param('id') id: string,
     @Request() req: RequestUser
   ): Promise<UserEntity> {
     return this.service.findOne({
-      ...this.service.filter(id),
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.userSelect,
     });
   }
 
@@ -105,14 +108,15 @@ export class UsersController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(updateSwagger(UserEntity, controllerName))
   @Patch(':id')
-  async updateUser(
+  updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
     @Request() req: RequestUser
   ): Promise<UserEntity> {
-    return this.service.update(this.service.filter(id), {
+    return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateUserDto,
-      where: { id: +id },
+      where: { id: +id, restaurantId: req.user.restaurantId },
+      select: this.service.userSelect,
     });
   }
 
@@ -125,13 +129,13 @@ export class UsersController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(deleteSwagger(UserEntity, controllerName))
   @Delete(':id')
-  async deleteUser(
+  deleteUser(
     @Param('id') id: string,
     @Request() req: RequestUser
   ): Promise<UserEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

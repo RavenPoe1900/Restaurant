@@ -8,7 +8,7 @@ import {
   Param,
   Patch,
   Post,
-  Put,
+  Request,
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -25,6 +25,7 @@ import { UpdatePermissionDto, PermissionDto } from '../domain/permission.dtos';
 import { PermissionEntity } from '../domain/permission.entity';
 import { PaginationPermissionDto } from '../domain/pagination-permission.dto';
 import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dto';
+import { RequestUser } from 'src/_shared/domain/interface/request-user';
 
 const controllerName = 'Permissions';
 @ApiTags('Permissions')
@@ -42,10 +43,10 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseSwagger(createSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(createSwagger(PermissionEntity, controllerName))
   @Post()
   async createPermission(
-    @Body() body: PermissionDto,
+    @Body() body: PermissionDto
   ): Promise<PermissionEntity> {
     return await this.service.create({ data: body });
   }
@@ -59,14 +60,18 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(findSwagger(PermissionEntity, controllerName))
   @Get()
   async findAll(
     @Query() pagination: PaginationPermissionDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<PermissionEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
     });
   }
 
@@ -77,10 +82,13 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findOneSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(findOneSwagger(PermissionEntity, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<PermissionEntity> {
-    return this.service.findOne(this.service.filter(id));
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<PermissionEntity> {
+    return this.service.findOne(this.service.filter(id, req.user.restaurantId));
   }
 
   /**
@@ -91,13 +99,14 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(updateSwagger(PermissionEntity, controllerName))
   @Patch(':id')
   async updatePermission(
     @Param('id') id: string,
     @Body() updatePermissionDto: UpdatePermissionDto,
+    @Request() req: RequestUser
   ): Promise<PermissionEntity> {
-    return this.service.update(this.service.filter(id), {
+    return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updatePermissionDto,
       where: { id: +id },
     });
@@ -110,12 +119,15 @@ export class PermissionsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(deleteSwagger(PermissionDto, controllerName))
+  @ApiResponseSwagger(deleteSwagger(PermissionEntity, controllerName))
   @Delete(':id')
-  async deletePermission(@Param('id') id: string): Promise<PermissionEntity> {
+  async deletePermission(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<PermissionEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id),
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

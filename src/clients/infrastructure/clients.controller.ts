@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -24,6 +25,7 @@ import { ClientDto, UpdateClientDto } from '../domain/client.dtos';
 import { ClientEntity } from '../domain/client.entity';
 import { PaginationClientDto } from '../domain/pagination-client.dto';
 import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dto';
+import { RequestUser } from 'src/_shared/domain/interface/request-user';
 
 const controllerName = 'Clients';
 @ApiTags('Clients')
@@ -41,10 +43,17 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseSwagger(createSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(createSwagger(ClientEntity, controllerName))
   @Post()
-  async createClient(@Body() body: ClientDto): Promise<ClientEntity> {
-    return await this.service.create({ data: body });
+  async createClient(
+    @Body() body: ClientDto,
+    @Request() req: RequestUser
+  ): Promise<ClientEntity> {
+    return this.service.createClients(
+      body,
+      req.user.userId,
+      req.user.restaurantId
+    );
   }
 
   /**
@@ -56,14 +65,19 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(findSwagger(ClientEntity, controllerName))
   @Get()
   async findAll(
-    @Query() pagination: PaginationClientDto
+    @Query() pagination: PaginationClientDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<ClientEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      select: this.service.clientSelect,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
     });
   }
 
@@ -74,10 +88,16 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findOneSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(findOneSwagger(ClientEntity, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ClientEntity> {
-    return this.service.findOne(this.service.filter(id));
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<ClientEntity> {
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.clientSelect,
+    });
   }
 
   /**
@@ -88,16 +108,18 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(updateSwagger(ClientEntity, controllerName))
   @Patch(':id')
   async updateClient(
     @Param('id') id: string,
-    @Body() updateClientDto: UpdateClientDto
+    @Body() updateClientDto: UpdateClientDto,
+    @Request() req: RequestUser
   ): Promise<ClientEntity> {
-    return this.service.update(this.service.filter(id), {
-      data: updateClientDto,
-      where: { id: +id },
-    });
+    return this.service.updateClients(
+      id,
+      updateClientDto,
+      req.user.restaurantId
+    );
   }
 
   /**
@@ -107,12 +129,15 @@ export class ClientsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(deleteSwagger(ClientDto, controllerName))
+  @ApiResponseSwagger(deleteSwagger(ClientEntity, controllerName))
   @Delete(':id')
-  async deleteClient(@Param('id') id: string): Promise<ClientEntity> {
+  async deleteClient(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<ClientEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }
