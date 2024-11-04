@@ -26,6 +26,7 @@ type RestaurantWithoutId = Omit<
   | 'deletedBy'
   | 'version'
   | 'ownerId'
+  | 'currentCapacity'
 >;
 
 export class RestaurantDto implements RestaurantWithoutId {

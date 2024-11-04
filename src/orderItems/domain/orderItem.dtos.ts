@@ -1,14 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums } from '@prisma/client';
 import {
   IsDate,
-  IsEnum,
   IsInt,
   IsNotEmpty,
   IsNumber,
   IsPositive,
-  IsString,
 } from 'class-validator';
 import { OrderItemEntity } from './orderItem.entity';
 import { TransformStringToDate } from 'src/_shared/transform/stringToDate.transform';
