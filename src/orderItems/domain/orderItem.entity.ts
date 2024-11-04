@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderItem } from '@prisma/client';
 
-export class OrderItemEntity implements OrderItem{
+export class OrderItemEntity implements OrderItem {
   @ApiProperty({
     description: 'Unique identifier for the order item',
     example: 1,
@@ -97,4 +97,12 @@ export class OrderItemEntity implements OrderItem{
     type: Number,
   })
   ownerId: number;
+
+  @ApiProperty({
+    example: 1,
+    description:
+      'The unique identifier of the restaurant associated with the user',
+    type: Number,
+  })
+  restaurantId: number;
 }

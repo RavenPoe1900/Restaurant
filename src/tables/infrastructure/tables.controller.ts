@@ -45,8 +45,18 @@ export class TablesController {
   @HttpCode(HttpStatus.CREATED)
   @ApiResponseSwagger(createSwagger(TableEntity, controllerName))
   @Post()
-  async createTable(@Body() body: TableDto): Promise<TableEntity> {
-    return await this.service.create({ data: body });
+  async createTable(
+    @Body() body: TableDto,
+    @Request() req: RequestUser
+  ): Promise<TableEntity> {
+    return await this.service.create({
+      data: {
+        ...body,
+        restaurantId: req.user.restaurantId,
+        ownerId: req.user.userId,
+      },
+      select: this.service.tableSelect,
+    });
   }
 
   /**
@@ -61,11 +71,16 @@ export class TablesController {
   @ApiResponseSwagger(findSwagger(TableEntity, controllerName))
   @Get()
   async findAll(
-    @Query() pagination: PaginationTableDto
+    @Query() pagination: PaginationTableDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<TableEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
+      select: this.service.tableSelect,
     });
   }
 
@@ -78,8 +93,14 @@ export class TablesController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findOneSwagger(TableEntity, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<TableEntity> {
-    return this.service.findOne(this.service.filter(id));
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<TableEntity> {
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.tableSelect,
+    });
   }
 
   /**
@@ -114,10 +135,13 @@ export class TablesController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(deleteSwagger(TableEntity, controllerName))
   @Delete(':id')
-  async deleteTable(@Param('id') id: string): Promise<TableEntity> {
+  async deleteTable(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<TableEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

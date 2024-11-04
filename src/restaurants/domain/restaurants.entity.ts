@@ -5,7 +5,7 @@ import { BaseEntity } from 'src/_shared/domain/base.entity';
 export class RestaurantEntity extends BaseEntity implements Restaurant {
   @ApiProperty({
     description: 'Unique identifier for the restaurant',
-    example: 1, // Example value for better documentation
+    example: 1,
     type: Number,
   })
   id: number;
@@ -19,15 +19,14 @@ export class RestaurantEntity extends BaseEntity implements Restaurant {
 
   @ApiProperty({
     description: 'Phone number of the restaurant',
-    example: '123-456-7890', // Example value for better documentation
-    type: String,
+    example: '123-456-7890',
   })
   phone: string;
 
   @ApiProperty({
     description: 'Name of the restaurant',
     uniqueItems: true,
-    example: 'The Great Restaurant', // Example value for better documentation
+    example: 'The Great Restaurant',
     type: String,
   })
   name: string;
@@ -35,7 +34,7 @@ export class RestaurantEntity extends BaseEntity implements Restaurant {
   @ApiProperty({
     description: 'License type of the restaurant',
     uniqueItems: true,
-    example: 'Food Service License', // Example value for better documentation
+    example: 'Food Service License',
     type: String,
   })
   licenseType: string;
@@ -46,5 +45,20 @@ export class RestaurantEntity extends BaseEntity implements Restaurant {
     example: 1,
     type: Number,
   })
-  ownerId: number; // Marked as optional
+  ownerId: number;
+
+  @ApiProperty({
+    description: 'The address of the restaurant',
+    example: '123 Main St, Springfield, USA',
+    type: String,
+    maxLength: 255,
+  })
+  address: string;
+
+  @ApiProperty({
+    description: 'The seating capacity of the restaurant',
+    example: 100,
+    type: Number,
+  })
+  capacity: number;
 }

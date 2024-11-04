@@ -2,6 +2,7 @@ import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { $Enums, Reservation, ReservationStatusEnum } from '@prisma/client';
 import { IsDate, IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { TransformStringToDate } from 'src/_shared/transform/stringToDate.transform';
 
 type ReservationWithout = Omit<
   Reservation,
@@ -31,8 +32,8 @@ export class ReservationDto implements ReservationWithout {
     description: 'The date of the reservation',
     example: '2024-12-25T00:00:00.000Z',
     type: String,
-    format: 'date-time',
   })
+  @TransformStringToDate()
   @IsNotEmpty()
   @IsDate()
   date: Date;

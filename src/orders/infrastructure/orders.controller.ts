@@ -50,7 +50,12 @@ export class OrdersController {
     @Request() req: RequestUser
   ): Promise<OrderEntity> {
     return await this.service.create({
-      data: { ...body, ownerId: req.user.userId },
+      data: {
+        ...body,
+        ownerId: req.user.userId,
+        restaurantId: req.user.restaurantId,
+      },
+      select: this.service.orderSelect,
     });
   }
 
@@ -66,11 +71,16 @@ export class OrdersController {
   @ApiResponseSwagger(findSwagger(OrderEntity, controllerName))
   @Get()
   async findAll(
-    @Query() pagination: PaginationOrderDto
+    @Query() pagination: PaginationOrderDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<OrderEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
+      select: this.service.orderSelect,
     });
   }
 
@@ -83,8 +93,14 @@ export class OrdersController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findOneSwagger(OrderEntity, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<OrderEntity> {
-    return this.service.findOne(this.service.filter(id));
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<OrderEntity> {
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.orderSelect,
+    });
   }
 
   /**
@@ -99,11 +115,13 @@ export class OrdersController {
   @Patch(':id')
   async updateOrder(
     @Param('id') id: string,
-    @Body() updateOrderDto: UpdateOrderDto
+    @Body() updateOrderDto: UpdateOrderDto,
+    @Request() req: RequestUser
   ): Promise<OrderEntity> {
-    return this.service.update(this.service.filter(id), {
+    return this.service.update(this.service.filter(id, req.user.restaurantId), {
       data: updateOrderDto,
-      where: { id: +id },
+      where: { id: +id, restaurantId: req.user.restaurantId },
+      select: this.service.orderSelect,
     });
   }
 
@@ -116,10 +134,13 @@ export class OrdersController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(deleteSwagger(OrderEntity, controllerName))
   @Delete(':id')
-  async deleteOrder(@Param('id') id: string): Promise<OrderEntity> {
+  async deleteOrder(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<OrderEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

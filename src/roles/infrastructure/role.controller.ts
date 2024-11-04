@@ -45,7 +45,7 @@ export class RolesController {
   @HttpCode(HttpStatus.CREATED)
   @ApiResponseSwagger(createSwagger(RoleEntity, controllerName))
   @Post()
-  async createRole(
+  createRole(
     @Body() body: RoleDto,
     @Request() req: RequestUser
   ): Promise<RoleEntity> {
@@ -63,12 +63,17 @@ export class RolesController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findSwagger(RoleEntity, controllerName))
   @Get()
-  async findAll(
-    @Query() pagination: PaginationRoleDto
+  findAll(
+    @Query() pagination: PaginationRoleDto,
+    @Request() req: RequestUser
   ): Promise<PaginatedResponse<RoleEntity>> {
     return this.service.findAll({
       skip: pagination.page,
       take: pagination.perPage,
+      select: this.service.roleSelect,
+      where: {
+        restaurantId: req.user.restaurantId,
+      },
     });
   }
 
@@ -81,8 +86,14 @@ export class RolesController {
   @HttpCode(HttpStatus.OK)
   @ApiResponseSwagger(findOneSwagger(RoleEntity, controllerName))
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<RoleEntity> {
-    return this.service.findOne(this.service.filter(id));
+  findOne(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<RoleEntity> {
+    return this.service.findOne({
+      ...this.service.filter(id, req.user.restaurantId),
+      select: this.service.roleSelect,
+    });
   }
 
   /**
@@ -95,12 +106,12 @@ export class RolesController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(updateSwagger(RoleEntity, controllerName))
   @Patch(':id')
-  async updateRole(
+  updateRole(
     @Param('id') id: string,
     @Body() updateRoleDto: UpdateRoleDto,
     @Request() req: RequestUser
   ): Promise<RoleEntity> {
-    return this.service.updateService(id, updateRoleDto, req.user.userId);
+    return this.service.updateService(id, updateRoleDto, req.user.restaurantId);
   }
 
   /**
@@ -112,10 +123,13 @@ export class RolesController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponseSwagger(deleteSwagger(RoleEntity, controllerName))
   @Delete(':id')
-  async deleteRole(@Param('id') id: string): Promise<RoleEntity> {
+  deleteRole(
+    @Param('id') id: string,
+    @Request() req: RequestUser
+  ): Promise<RoleEntity> {
     return this.service.remove(
-      this.service.filter(id),
-      this.service.filter(id)
+      this.service.filter(id, req.user.restaurantId),
+      this.service.filter(id, req.user.restaurantId)
     );
   }
 }

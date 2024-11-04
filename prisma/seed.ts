@@ -52,6 +52,8 @@ async function main() {
       name: 'Restaurant A',
       phone: '123-456-7890',
       licenseType: 'Type A',
+      capacity: 123,
+      address: 'sdsdads',
       rating: 5,
       createdBy: 'admin@example.com',
       ownerId: adminUser.id,
@@ -61,11 +63,13 @@ async function main() {
             name: 'Client A',
             email: 'clientA@example.com',
             ownerId: adminUser.id,
+            age: 12,
           },
           {
             name: 'Client B',
             email: 'clientB@example.com',
             ownerId: adminUser.id,
+            age: 18,
           },
         ],
       },
@@ -79,6 +83,8 @@ async function main() {
       name: 'Restaurant B',
       phone: '098-765-4321',
       licenseType: 'Type B',
+      capacity: 123,
+      address: 'sdsdad1s',
       rating: 4,
       createdBy: 'admin@example.com',
       ownerId: adminUser.id,
@@ -92,6 +98,7 @@ async function main() {
       name: 'Client A',
       email: 'clientA@example.com',
       ownerId: adminUser.id,
+      age: 18,
     },
   });
 
@@ -102,20 +109,14 @@ async function main() {
       name: 'Client B',
       email: 'clientB@example.com',
       ownerId: adminUser.id,
+      age: 18,
     },
   });
 
   // Upsert mesas
   await prisma.table.upsert({
     where: {
-      number_restaurantId: {
-        number: 1,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type A' },
-          })
-        )?.id,
-      },
+      id: 1,
     },
     update: {},
     create: {
@@ -135,14 +136,7 @@ async function main() {
 
   await prisma.table.upsert({
     where: {
-      number_restaurantId: {
-        number: 2,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type A' },
-          })
-        )?.id,
-      },
+      id: 2,
     },
     update: {},
     create: {
@@ -162,14 +156,7 @@ async function main() {
 
   await prisma.table.upsert({
     where: {
-      number_restaurantId: {
-        number: 3,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type B' },
-          })
-        )?.id,
-      },
+      id: 1,
     },
     update: {},
     create: {
@@ -190,14 +177,7 @@ async function main() {
   // Upsert reservas
   await prisma.reservation.upsert({
     where: {
-      clientId_restaurantId: {
-        clientId: 1,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type A' },
-          })
-        )?.id,
-      },
+      id: 1,
     },
     update: {},
     create: {
@@ -216,14 +196,7 @@ async function main() {
 
   await prisma.reservation.upsert({
     where: {
-      clientId_restaurantId: {
-        clientId: 2,
-        restaurantId: (
-          await prisma.restaurant.findUnique({
-            where: { licenseType: 'Type A' },
-          })
-        )?.id,
-      },
+      id: 2,
     },
     update: {},
     create: {
@@ -243,27 +216,13 @@ async function main() {
   // Upsert órdenes
   await prisma.order.upsert({
     where: {
-      number: 1,
+      id: 1,
     },
     update: {},
     create: {
-      number: 1,
       date: new Date(),
       status: 'OPEN',
-      tableId: (
-        await prisma.table.findUnique({
-          where: {
-            number_restaurantId: {
-              number: 1,
-              restaurantId: (
-                await prisma.restaurant.findUnique({
-                  where: { licenseType: 'Type A' },
-                })
-              )?.id,
-            },
-          },
-        })
-      )?.id,
+      tableId: 1,
       restaurantId: (
         await prisma.restaurant.findUnique({
           where: { licenseType: 'Type A' },
@@ -271,8 +230,20 @@ async function main() {
       )?.id,
       items: {
         create: [
-          { quantity: 2, price: 25.0, date: new Date(), ownerId: adminUser.id },
-          { quantity: 1, price: 50.0, date: new Date(), ownerId: adminUser.id },
+          {
+            quantity: 2,
+            price: 25.0,
+            date: new Date(),
+            ownerId: adminUser.id,
+            restaurantId: 1,
+          },
+          {
+            quantity: 1,
+            price: 50.0,
+            date: new Date(),
+            ownerId: adminUser.id,
+            restaurantId: 1,
+          },
         ],
       },
       ownerId: adminUser.id,
@@ -280,26 +251,12 @@ async function main() {
   });
 
   await prisma.order.upsert({
-    where: { number: 2 },
+    where: { id: 2 },
     update: {},
     create: {
       date: new Date(),
-      number: 2,
       status: 'OPEN',
-      tableId: (
-        await prisma.table.findUnique({
-          where: {
-            number_restaurantId: {
-              number: 2,
-              restaurantId: (
-                await prisma.restaurant.findUnique({
-                  where: { licenseType: 'Type A' },
-                })
-              )?.id,
-            },
-          },
-        })
-      )?.id,
+      tableId: 2,
       restaurantId: (
         await prisma.restaurant.findUnique({
           where: { licenseType: 'Type A' },
@@ -307,8 +264,20 @@ async function main() {
       )?.id,
       items: {
         create: [
-          { quantity: 3, price: 30.0, date: new Date(), ownerId: adminUser.id },
-          { quantity: 1, price: 60.0, date: new Date(), ownerId: adminUser.id },
+          {
+            quantity: 3,
+            price: 30.0,
+            date: new Date(),
+            ownerId: adminUser.id,
+            restaurantId: 1,
+          },
+          {
+            quantity: 1,
+            price: 60.0,
+            date: new Date(),
+            ownerId: adminUser.id,
+            restaurantId: 1,
+          },
         ],
       },
       ownerId: adminUser.id,

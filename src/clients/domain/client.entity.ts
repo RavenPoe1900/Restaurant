@@ -24,6 +24,13 @@ export class ClientEntity implements Client {
   email: string;
 
   @ApiProperty({
+    description: 'The age of the user',
+    example: 30,
+    type: Number,
+  })
+  age: number;
+
+  @ApiProperty({
     description: 'The ID of the restaurant the client is associated with',
     required: false,
     example: 1,

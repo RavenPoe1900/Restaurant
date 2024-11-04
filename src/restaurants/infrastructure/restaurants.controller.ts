@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -24,6 +25,7 @@ import { RestaurantDto, UpdateRestaurantDto } from '../domain/restaurants.dtos';
 import { PaginationRestaurantDto } from '../domain/pagination-restaurants.dto';
 import { PaginatedResponse } from 'src/_shared/domain/dtos/paginationResponse.dto';
 import { RestaurantEntity } from '../domain/restaurants.entity';
+import { RequestUser } from 'src/_shared/domain/interface/request-user';
 
 const controllerName = 'Restaurants';
 @ApiTags('Restaurants')
@@ -41,7 +43,7 @@ export class RestaurantsController {
    */
 
   @HttpCode(HttpStatus.CREATED)
-  @ApiResponseSwagger(createSwagger(RestaurantDto, controllerName))
+  @ApiResponseSwagger(createSwagger(RestaurantEntity, controllerName))
   @Post()
   async createRestaurant(
     @Body() body: RestaurantDto
@@ -58,7 +60,7 @@ export class RestaurantsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findSwagger(RestaurantDto, controllerName))
+  @ApiResponseSwagger(findSwagger(RestaurantEntity, controllerName))
   @Get()
   async findAll(
     @Query() pagination: PaginationRestaurantDto
@@ -76,7 +78,7 @@ export class RestaurantsController {
    */
 
   @HttpCode(HttpStatus.OK)
-  @ApiResponseSwagger(findOneSwagger(RestaurantDto, controllerName))
+  @ApiResponseSwagger(findOneSwagger(RestaurantEntity, controllerName))
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<RestaurantEntity> {
     return this.service.findOne(this.service.filter(id));
@@ -90,7 +92,7 @@ export class RestaurantsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(updateSwagger(RestaurantDto, controllerName))
+  @ApiResponseSwagger(updateSwagger(RestaurantEntity, controllerName))
   @Patch(':id')
   async updateRestaurant(
     @Param('id') id: string,
@@ -109,7 +111,7 @@ export class RestaurantsController {
    */
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponseSwagger(deleteSwagger(RestaurantDto, controllerName))
+  @ApiResponseSwagger(deleteSwagger(RestaurantEntity, controllerName))
   @Delete(':id')
   async deleteRestaurant(@Param('id') id: string): Promise<RestaurantEntity> {
     return this.service.remove(
